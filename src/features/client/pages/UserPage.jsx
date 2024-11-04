@@ -2,11 +2,13 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useUsers } from "../hooks/useUsers";
 import { formatDate, loggedUser } from "../../../shared/utils";
+import { useAuthStore } from "../../security/store/useAuthStore";
 
 // Obtener ID y ProfilePicture del usuario en sesión (Temporal)
 const loggedInUser = loggedUser();
 
 export const UserPage = () => {
+  const logout = useAuthStore((state) => state.logout);
   const [fetching, setFetching] = useState(true);
   const { user, loadUserById } = useUsers();
 
@@ -16,6 +18,11 @@ export const UserPage = () => {
       setFetching(false);
     }
   }, [fetching, loadUserById]);
+
+  // Cerrar Sesión
+  const handleLogout = () => {
+    logout();
+  };
 
   return (
     <div className="container mx-auto p-6">
@@ -44,7 +51,9 @@ export const UserPage = () => {
             </button>
           </Link>
           <Link to="/home">
-            <button className="bg-red-600 text-white w-full py-2 rounded hover:bg-red-500">
+            <button
+              onClick={handleLogout}
+              className="bg-red-600 text-white w-full py-2 rounded hover:bg-red-500">
               Cerrar Sesión
             </button>
           </Link>

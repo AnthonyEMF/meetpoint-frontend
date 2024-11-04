@@ -1,5 +1,4 @@
 export * from './Nav';
-export * from './NavLogin';
 export * from './Sidebar';
 export * from './EventList';
 export * from './EventListItem';

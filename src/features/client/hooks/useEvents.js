@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { getEventsList, getEventById, createEventApi, editEventApi, deleteEventApi } from "../../../shared/actions/events/events";
+import { getEventsList, getEventById, createEventApi, editEventApi, deleteEventApi } from "../../../shared/actions/events";
 
 export const useEvents = () => {
     const [events, setEvents] = useState({});

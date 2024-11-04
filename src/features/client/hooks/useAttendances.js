@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createAttendanceApi, editAttendanceApi, deleteAttendanceApi } from "../../../shared/actions/attendances/attendances";
+import { createAttendanceApi, editAttendanceApi, deleteAttendanceApi } from "../../../shared/actions/attendances";
 
 export const useAttendances = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);

@@ -1,8 +1,8 @@
 import { MdEmail, MdLocationOn } from "react-icons/md";
 import { ImLock } from "react-icons/im";
 import { FaUser } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
-import { useUsers } from "../hooks/useUsers";
+import { Link, useNavigate } from "react-router-dom";
+import { useUsers } from "../../client/hooks/useUsers";
 import { useState } from "react";
 
 export const RegisterPage = () => {
@@ -137,8 +137,14 @@ export const RegisterPage = () => {
             disabled={isSubmitting}
             className="flex justify-center text-center bg-blue-500 text-white hover:bg-blue-600 p-2 rounded-md w-full"
           >
-            {isSubmitting ? "Registrando..." : "Continuar"}
+            {isSubmitting ? "Registrando..." : "Ingresar"}
           </button>
+          <Link
+            to="/security/login"
+            className="flex justify-center pt-3 text-blue-500 underline"
+            >
+            Iniciar Sesión
+          </Link>
         </form>
         {error && <div className="mt-4 text-red-600 text-center">{error}</div>}
       </div>

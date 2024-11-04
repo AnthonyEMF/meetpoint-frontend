@@ -1,19 +1,14 @@
-import { Footer, Nav, NavLogin } from '../components';
-import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
-import { HomePage, MainPage, UserPage, EventPage, CreateEventPage, EditEventPage, LoginPage, RegisterPage } from '../pages/';
+import { Footer, Nav } from '../components';
+import { Navigate, Route, Routes } from 'react-router-dom';
+import { HomePage, MainPage, UserPage, EventPage, CreateEventPage, EditEventPage } from '../pages/';
 
 export const ClientRouter = () => {
-  const location = useLocation();
-
   return (
     <div className='overflow-x-hidden bg-gray-800 w-screen h-screen bg-hero-pattern bg-no-repeat bg-cover'>
-      {/* Mostrar Login y Register en HomePage */}
-      {['/home', '/login', '/register'].includes(location.pathname) ? <NavLogin /> : <Nav />}
+      <Nav />
       <div className="px-10">
         <div className="min-h-screen flex flex-col ">
           <Routes>
-              <Route path='/login' element={<LoginPage/>}/>
-              <Route path='/register' element={<RegisterPage/>}/>
               <Route path='/home' element={<HomePage/>}/>
               <Route path='/main' element={<MainPage/>}/>
               <Route path='/user' element={<UserPage/>}/>

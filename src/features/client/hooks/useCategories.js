@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { getCategoriesList } from "../../../shared/actions/categories/categories";
+import { getCategoriesList } from "../../../shared/actions/categories";
 
 export const useCategories = () => {
     const [categories, setCategories] = useState({});

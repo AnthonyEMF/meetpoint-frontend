@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { getUserById, createUserApi } from "../../../shared/actions/users/users";
+import { getUserById, createUserApi } from "../../../shared/actions/users";
 
 export const useUsers = () => {
     //const [isLoading, setIsLoading] = useState(false);

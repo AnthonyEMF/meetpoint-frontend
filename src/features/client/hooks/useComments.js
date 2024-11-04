@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createCommentApi, editCommentApi, deleteCommentApi } from "../../../shared/actions/comments/comments";
+import { createCommentApi, editCommentApi, deleteCommentApi } from "../../../shared/actions/comments";
 
 export const useComments = () => {
     const [comment, setComment] = useState({});
