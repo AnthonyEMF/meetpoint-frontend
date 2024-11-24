@@ -1,9 +1,8 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAttendances } from "../hooks/useAttendances";
-import { loggedUser } from "../../../shared/utils";
-
-// Simulación del usuario en sesión (Temporal)
-const loggedInUser = loggedUser();
+import { useAuthStore } from "../../security/store";
+import { ProtectedComponent } from "../../../shared/components/ProtectedComponent";
+import { rolesListConstant } from "../../../shared/constants";
 
 export const Attendances = ({ event, handleAttendancesChange }) => {
   const {
@@ -15,10 +14,14 @@ export const Attendances = ({ event, handleAttendancesChange }) => {
   } = useAttendances();
   const [currentAttendance, setCurrentAttendance] = useState(null);
 
+  // Obtener id del usuario desde el token
+  const getUserId = useAuthStore((state) => state.getUserId);
+  const loggedUserId = getUserId();
+
   // Validar si el usuario tiene una asistencia registrada
   useEffect(() => {
     const userAttendance = event.data.attendances.find(
-      (attendance) => attendance.userId === loggedInUser.id
+      (attendance) => attendance.userId === loggedUserId
     );
     setCurrentAttendance(userAttendance || null);
   }, [event.data.attendances]);
@@ -26,23 +29,20 @@ export const Attendances = ({ event, handleAttendancesChange }) => {
   // Crear asistencia
   const handleConfirmAttendance = async () => {
     const attendanceData = {
-      userId: loggedInUser.id,
       eventId: event.data.id,
-      state: "CONFIRMADO",
+      state: "CONFIRMADO", // Se le asigna CONFORMADO automáticamente
     };
 
     const result = await createAttendance(attendanceData);
     if (result) {
       setCurrentAttendance(result); // Guardar la asistencia creada
-      if (handleAttendancesChange) handleAttendancesChange(); // Notificar al componente padre
+      if (handleAttendancesChange) handleAttendancesChange();
     }
   };
 
-  // Cambiar el estado de la asistencia
+  // Editar la asistencia
   const handleChangeAttendanceState = async (newState) => {
     const updatedAttendance = {
-      userId: loggedInUser.id,
-      eventId: event.data.id,
       state: newState,
     };
 
@@ -52,7 +52,7 @@ export const Attendances = ({ event, handleAttendancesChange }) => {
     );
     if (result) {
       setCurrentAttendance(result); // Actualizar la asistencia con el nuevo estado
-      if (handleAttendancesChange) handleAttendancesChange(); // Notificar al componente padre
+      if (handleAttendancesChange) handleAttendancesChange();
     }
   };
 
@@ -61,7 +61,7 @@ export const Attendances = ({ event, handleAttendancesChange }) => {
     const result = await deleteAttendance(currentAttendance.id);
     if (result) {
       setCurrentAttendance(null); // Eliminar la asistencia localmente
-      if (handleAttendancesChange) handleAttendancesChange(); // Notificar al componente padre
+      if (handleAttendancesChange) handleAttendancesChange();
     }
   };
 
@@ -93,6 +93,9 @@ export const Attendances = ({ event, handleAttendancesChange }) => {
           <p>No hay asistentes registrados.</p>
         )}
       </div>
+
+      {/* Esconder botones según los roles */}
+      <ProtectedComponent requiredRoles={[rolesListConstant.ADMIN, rolesListConstant.USER, rolesListConstant.ORGANIZER]}>
       {currentAttendance ? (
         <div className="mt-4 flex flex-col gap-2">
           <h3 className="text-lg font-semibold mb-2">
@@ -140,6 +143,8 @@ export const Attendances = ({ event, handleAttendancesChange }) => {
           Confirmar Asistencia
         </button>
       )}
+      </ProtectedComponent>
+
       {error && <p className="text-red-500 mt-4">{error.message}</p>}
     </div>
   );

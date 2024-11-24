@@ -2,13 +2,7 @@ import { Link } from "react-router-dom";
 import { useCategories } from "../hooks/useCategories";
 import { useEffect, useState } from "react";
 import { useUsers } from "../hooks/useUsers";
-import { loggedUser } from "../../../shared/utils";
 import { useAuthStore } from "../../security/store/useAuthStore";
-
-// TODO: Corregir código para obtener la información del usuario autenticado
-
-// Obtener ID y ProfilePicture del usuario en sesión (Temporal)
-const loggedInUser = loggedUser();
 
 export const Sidebar = ({ onCategorySelect }) => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
@@ -17,9 +11,13 @@ export const Sidebar = ({ onCategorySelect }) => {
   const { categories, loadCategories, isLoading } = useCategories();
   const [fetching, setFetching] = useState(true);
 
+  // Obtener id del usuario desde el token
+  const getUserId = useAuthStore((state) => state.getUserId);
+  const loggedUserId = getUserId();
+
   useEffect(() => {
     if (fetching) {
-      loadUserById(loggedInUser.id);
+      loadUserById(loggedUserId);
       loadCategories();
       setFetching(false);
     }
@@ -43,7 +41,7 @@ export const Sidebar = ({ onCategorySelect }) => {
           <div className="text-center mb-2">
             <Link to="/user">
               <img
-                src={user?.data?.profilePicture || loggedInUser.profilePicture}
+                src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=1780&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                 alt="Perfil"
                 className="w-24 h-24 rounded-full mx-auto mb-3"
               />

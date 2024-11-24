@@ -2,10 +2,6 @@ import { useEffect, useState } from "react";
 import { useEvents } from "../hooks/useEvents";
 import { useNavigate } from "react-router-dom";
 import { useCategories } from "../hooks/useCategories";
-import { loggedUser } from "../../../shared/utils";
-
-// Simulación del usuario en sesión (Temporal)
-const loggedInUser = loggedUser();
 
 export const CreateEventPage = () => {
   const navigate = useNavigate();
@@ -14,7 +10,6 @@ export const CreateEventPage = () => {
   const { createEvent, isSubmitting, error } = useEvents();
   const [eventData, setEventData] = useState({
     categoryId: "",
-    organizerId: loggedInUser.id,
     title: "",
     description: "",
     ubication: "",

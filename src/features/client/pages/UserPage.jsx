@@ -1,20 +1,21 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useUsers } from "../hooks/useUsers";
-import { formatDate, loggedUser } from "../../../shared/utils";
+import { formatDate } from "../../../shared/utils";
 import { useAuthStore } from "../../security/store/useAuthStore";
-
-// Obtener ID y ProfilePicture del usuario en sesión (Temporal)
-const loggedInUser = loggedUser();
 
 export const UserPage = () => {
   const logout = useAuthStore((state) => state.logout);
   const [fetching, setFetching] = useState(true);
   const { user, loadUserById } = useUsers();
 
+  // Obtener id del usuario desde el token
+  const getUserId = useAuthStore((state) => state.getUserId);
+  const loggedUserId = getUserId();
+
   useEffect(() => {
     if(fetching){
-      loadUserById(loggedInUser.id);
+      loadUserById(loggedUserId);
       setFetching(false);
     }
   }, [fetching, loadUserById]);
@@ -32,7 +33,7 @@ export const UserPage = () => {
           <div className="mr-8">
             <img
               className="w-32 h-32 rounded-full"
-              src={user?.data?.profilePicture || loggedInUser.profilePicture}
+              src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=1780&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
               alt="Profile"
             />
           </div>

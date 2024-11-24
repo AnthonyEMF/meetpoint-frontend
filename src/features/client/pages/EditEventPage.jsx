@@ -2,10 +2,7 @@ import { useState, useEffect } from "react";
 import { useEvents } from "../hooks/useEvents";
 import { useParams, useNavigate } from "react-router-dom";
 import { useCategories } from "../hooks/useCategories";
-import { loggedUser } from "../../../shared/utils";
-
-// Simulación del usuario en sesión (Temporal)
-const loggedInUser = loggedUser();
+import { useAuthStore } from "../../security/store";
 
 export const EditEventPage = () => {
   const { id } = useParams();
@@ -20,6 +17,10 @@ export const EditEventPage = () => {
     ubication: "",
     date: "",
   });
+
+  // Obtener id del usuario desde el token
+  const getUserId = useAuthStore((state) => state.getUserId);
+  const loggedUserId = getUserId();
 
   // Cargar categorías
   useEffect(() => {
@@ -72,7 +73,7 @@ export const EditEventPage = () => {
     try {
       await editEvent(id, {
         categoryId: formData.categoryId,
-        organizerId: loggedInUser.id,
+        organizerId: loggedUserId,
         title: formData.title,
         description: formData.description,
         ubication: formData.ubication,

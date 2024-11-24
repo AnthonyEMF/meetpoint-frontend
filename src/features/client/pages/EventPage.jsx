@@ -1,17 +1,19 @@
-import { formatDate, loggedUser } from "../../../shared/utils";
+import { formatDate } from "../../../shared/utils";
 import { useEvents } from "../hooks";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Attendances, Comments, EventPageSkeleton } from "../components";
-
-// Simulación del usuario en sesión (Temporal)
-const loggedInUser = loggedUser();
+import { useAuthStore } from "../../security/store";
 
 export const EventPage = () => {
   const { id } = useParams();
   const { event, loadEventById, deleteEvent, isLoading } = useEvents();
   const [fetching, setFetching] = useState(true);
   const navigate = useNavigate();
+
+  // Obtener id del usuario desde el token
+  const getUserId = useAuthStore((state) => state.getUserId);
+  const loggedUserId = getUserId();
 
   useEffect(() => {
     if (fetching) {
@@ -27,7 +29,7 @@ export const EventPage = () => {
   }
 
   // Verificar si el usuario en sesión es el organizador del evento
-  const isOrganizer = loggedInUser.id === event.data.organizerId;
+  const isOrganizer = loggedUserId === event.data.organizerId;
 
   // Editar el evento
   const handleEditEvent = () => {

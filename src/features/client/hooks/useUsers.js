@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { getUserById, createUserApi } from "../../../shared/actions/users";
 
+// TODO: Arreglar
+
 export const useUsers = () => {
-    //const [isLoading, setIsLoading] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState(null);
-    //const [users, setUsers] = useState({});
     const [user, setUser] = useState({});
+    //const [users, setUsers] = useState({});
+    //const [isLoading, setIsLoading] = useState(false);
 
     // Cargar usuario por Id
     const loadUserById = async (id) => {

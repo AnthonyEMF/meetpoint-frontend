@@ -10,6 +10,7 @@ export const EventList = ({ selectedCategory }) => {
   const [searchTerm, setSearchTerm] = useState(selectedCategory || "");
   const [fetching, setFetching] = useState(true);
 
+  // El fetching evita que la pagina se este recargando constantemente
   useEffect(() => {
     if (fetching) {
       loadEvents(searchTerm, currentPage);

@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { useComments } from "../hooks/useComments";
-import { loggedUser } from "../../../shared/utils";
 import { RiDeleteBin5Fill, RiEdit2Fill } from "react-icons/ri";
-
-// Simulación del usuario en sesión (Temporal)
-const loggedInUser = loggedUser();
+import { useAuthStore } from "../../security/store";
+import { ProtectedComponent } from "../../../shared/components/ProtectedComponent";
+import { rolesListConstant } from "../../../shared/constants";
 
 export const Comments = ({ event, handleCommentsChange }) => {
   const { createComment, editComment, deleteComment, isSubmitting, error } = useComments();
@@ -12,19 +11,22 @@ export const Comments = ({ event, handleCommentsChange }) => {
   const [editingCommentId, setEditingCommentId] = useState(null);
   const [editedContent, setEditedContent] = useState('');
 
+  // Obtener id del usuario desde el token
+  const getUserId = useAuthStore((state) => state.getUserId);
+  const loggedUserId = getUserId();
+
   // Crear un nuevo comentario
   const handleCreateComment = async () => {
     if (!newComment.trim()) return;
 
     const commentData = {
-      userId: loggedInUser.id,
       eventId: event.data.id,
       content: newComment.trim(),
     };
 
     await createComment(commentData);
     setNewComment('');
-    if (handleCommentsChange) handleCommentsChange(); // Notificar al componente padre
+    if (handleCommentsChange) handleCommentsChange();
   };
 
   // Editar un comentario
@@ -33,20 +35,18 @@ export const Comments = ({ event, handleCommentsChange }) => {
 
     const commentData = {
       content: editedContent.trim(),
-      userId: loggedInUser.id,
-      eventId: event.data.id,
     };
 
     await editComment(commentId, commentData);
     setEditingCommentId(null);
     setEditedContent('');
-    if (handleCommentsChange) handleCommentsChange(); // Notificar al componente padre
+    if (handleCommentsChange) handleCommentsChange();
   };
 
   // Eliminar un comentario
   const handleDeleteComment = async (commentId) => {
     await deleteComment(commentId);
-    if (handleCommentsChange) handleCommentsChange(); // Notificar al componente padre
+    if (handleCommentsChange) handleCommentsChange();
   };
 
   return (
@@ -91,7 +91,7 @@ export const Comments = ({ event, handleCommentsChange }) => {
                   </div>
                 )}
               </div>
-              {comment.userId === loggedInUser.id && (
+              {comment.userId === loggedUserId && ( // Arreglo temporal
                 <div className="flex space-x-2">
                   {editingCommentId === comment.id ? null : (
                     <>
@@ -122,6 +122,9 @@ export const Comments = ({ event, handleCommentsChange }) => {
           <p>No hay comentarios todavía.</p>
         )}
       </ul>
+
+      {/* Esconder botones según los roles */}
+      <ProtectedComponent requiredRoles={[rolesListConstant.ADMIN, rolesListConstant.USER, rolesListConstant.ORGANIZER]}>
       <div className="mt-4">
         <textarea
           className="w-full p-4 border rounded-lg"
@@ -138,6 +141,8 @@ export const Comments = ({ event, handleCommentsChange }) => {
           Enviar
         </button>
       </div>
+      </ProtectedComponent>
+
       {error && <p className="text-red-500 mt-4">{error.message}</p>}
     </div>
   );

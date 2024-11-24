@@ -1,8 +1,9 @@
-# MeetPoint FrontEnd
+# MeetPoint Frontend
 
 ## Red Social de Eventos
 
 ### Desarrollado por:
+
 - **Anthony Edward Miranda Fuentes**
 
 - **Danilo Isaac Vides Chicas**

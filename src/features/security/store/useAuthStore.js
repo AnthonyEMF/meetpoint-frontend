@@ -1,13 +1,14 @@
 import { create } from "zustand";
 import { loginAsync } from "../../../shared/actions/auth";
+import { jwtDecode } from "jwt-decode";
 
 export const useAuthStore = create((set, get) => ({
   user: null,
   token: null,
+  roles: [],
   isAuthenticated: false,
   message: "",
   error: false,
-
   // Iniciar Sesión
   login: async (form) => {
     const { status, data, message } = await loginAsync(form);
@@ -36,6 +37,15 @@ export const useAuthStore = create((set, get) => ({
     return;
   },
 
+  // Renovar el token
+  setSession: (user, token, refreshToken) => {
+    set({user: user, token: token, refreshToken: refreshToken, isAuthenticated: true});
+
+    localStorage.setItem('user', JSON.stringify(get().user ?? {}));
+    localStorage.setItem('token', get().token);
+    localStorage.setItem('refreshToken', get().refreshToken);
+  },
+
   // Cerrar Sesión
   logout: () => {
     set({
@@ -44,7 +54,55 @@ export const useAuthStore = create((set, get) => ({
       isAuthenticated: false,
       error: false,
       message: "",
+      roles: []
     });
     localStorage.clear();
+  },
+
+  // Validar la sesión
+  validateAuthentication: () => {
+    const token = localStorage.getItem('token') ?? '';
+
+    if(token === ''){
+      set({isAuthenticated: false});
+      return ;
+    }else{
+      // TODO: Corregir con el refreshTokenExpire
+      try {
+        const decodeJwt = jwtDecode(token);
+        const currentTime = Math.floor(Date.now()/1000);
+        // Agregar el tiempo de expiración del refresh y cambiarlo
+        if (decodeJwt.exp < currentTime) {
+          console.log('Token expirado');
+          set({isAuthenticated: false});
+          return;
+        }
+
+        const roles = decodeJwt["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] ?? [];
+
+        set({isAuthenticated: true, roles: typeof(roles) === 'string' ? [roles] : roles});
+      } catch (error) {
+        console.error(error);
+        set({isAuthenticated: false});
+      }
+    }
+  },
+
+  // Obtener el id del usuario autenticado decodificando el token
+  getUserId: () => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      console.warn("No hay token disponible. El usuario no está autenticado.");
+      return null;
+    }
+
+    try {
+      const decodedToken = jwtDecode(token);
+      return decodedToken.UserId ?? null;
+    } catch (error) {
+      console.error("Error al decodificar el token:", error.message);
+      return null;
+    }
   },
 }));

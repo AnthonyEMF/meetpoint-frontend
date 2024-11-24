@@ -12,6 +12,7 @@ export const LoginPage = () => {
   const [loading, setLoading] = useState(false);
   // Variables de autenticación
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const validateAuthentication = useAuthStore((state) => state.validateAuthentication);
   const login = useAuthStore((state) => state.login);
   const error = useAuthStore((state) => state.error);
   const message = useAuthStore((state) => state.message);
@@ -31,6 +32,7 @@ export const LoginPage = () => {
     onSubmit: async (formValues) => {
       setLoading(true);
       await login(formValues);
+      validateAuthentication();
       setLoading(false);
     }
   });
