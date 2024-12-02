@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { loginAsync } from "../../../shared/actions/auth";
+import { loginAsync, registerAsync } from "../../../shared/actions/auth";
 import { jwtDecode } from "jwt-decode";
 
 export const useAuthStore = create((set, get) => ({
@@ -35,6 +35,23 @@ export const useAuthStore = create((set, get) => ({
     // Si status es falso... 
     set({message: message, error: true});
     return;
+  },
+
+  // Registrar usuario
+  register: async (form) => {
+    try {
+      const { status, message } = await registerAsync(form);
+
+      if (status) {
+        await get().login({ email: form.email, password: form.password });
+        set({ message: "Usuario registrado correctamente." });
+      } else {
+        set({ error: true, message: message });
+      }
+    } catch (error) {
+      console.error("Error en el registro:", error.message);
+      set({ error: true, message: "Ocurrió un error durante el registro." });
+    }
   },
 
   // Renovar el token
