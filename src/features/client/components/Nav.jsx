@@ -1,12 +1,6 @@
-<<<<<<< HEAD
-import { Link } from "react-router-dom"
-import { useAuthStore } from "../../security/store/useAuthStore"
-import { ProtectedComponent } from "../../../shared/components";
-=======
 import { Link } from "react-router-dom";
 import { useAuthStore } from "../../security/store/useAuthStore";
 import { ProtectedComponent } from "../../../shared/components/ProtectedComponent";
->>>>>>> f257eda1b470e71a9b6ba5c3698e74b8ebd7fdb3
 import { rolesListConstant } from "../../../shared/constants";
 
 export const Nav = () => {
@@ -24,11 +18,7 @@ export const Nav = () => {
               <div>
                 {/* Mostrar botón de Administración para el rol de ADMIN */}
                 <ProtectedComponent requiredRoles={[rolesListConstant.ADMIN, rolesListConstant.ORGANIZER]}>
-<<<<<<< HEAD
                   <Link to="/administration/dashboard" className="bg-gray-800 ml-3 px-4 py-2 rounded hover:bg-gray-700">Administración</Link>
-=======
-                  <Link to="/home" className="bg-gray-800 ml-3 px-4 py-2 rounded hover:bg-gray-700">Administración</Link>
->>>>>>> f257eda1b470e71a9b6ba5c3698e74b8ebd7fdb3
                 </ProtectedComponent>
               </div>
             )}
