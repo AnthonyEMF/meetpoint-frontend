@@ -23,7 +23,6 @@ export const Nav = () => {
               </div>
             )}
 
-
           </div>
           <div className="flex items-center">
             <Link to="/home" className="mr-6 py-2 font-bold hover:text-gray-800">Inicio</Link>
