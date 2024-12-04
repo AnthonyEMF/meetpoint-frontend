@@ -84,11 +84,10 @@ export const useAuthStore = create((set, get) => ({
       set({isAuthenticated: false});
       return ;
     }else{
-      // TODO: Corregir con el refreshTokenExpire
       try {
         const decodeJwt = jwtDecode(token);
         const currentTime = Math.floor(Date.now()/1000);
-        // Agregar el tiempo de expiración del refresh y cambiarlo
+        // TODO: Cambiar con el refreshTokenExpire
         if (decodeJwt.exp < currentTime) {
           console.log('Token expirado');
           set({isAuthenticated: false});

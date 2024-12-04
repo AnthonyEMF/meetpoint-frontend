@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom"
 import { useAuthStore } from "../../security/store/useAuthStore"
+import { ProtectedComponent } from "../../../shared/components";
+import { rolesListConstant } from "../../../shared/constants";
 
 export const Nav = () => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
@@ -13,8 +15,14 @@ export const Nav = () => {
             {!isAuthenticated ? (
               <Link to="security/login" className="bg-gray-800 ml-3 px-4 py-2 rounded hover:bg-gray-700">Iniciar Sesión</Link>
             ) : (
-              <div></div>
+              <div>
+                {/* Mostrar botón de Administración para el rol de ADMIN */}
+                <ProtectedComponent requiredRoles={[rolesListConstant.ADMIN, rolesListConstant.ORGANIZER]}>
+                  <Link to="/administration/dashboard" className="bg-gray-800 ml-3 px-4 py-2 rounded hover:bg-gray-700">Administración</Link>
+                </ProtectedComponent>
+              </div>
             )}
+
 
           </div>
           <div className="flex items-center">

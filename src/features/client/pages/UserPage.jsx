@@ -69,7 +69,7 @@ export const UserPage = () => {
             <div className="bg-white shadow-lg rounded-lg p-4">
               {user?.data?.organizedEvents?.length > 0 ? (
                 user.data.organizedEvents.map(event => (
-                  <Link to={`/main/event/${event.id}`} key={event.id} className="flex justify-between p-3 rounded-md hover:text-white hover:bg-gray-600">
+                  <Link to={`/main/event/${event.id}`} key={event.id} className="flex justify-between p-3 rounded-md transition-colors duration-200 hover:text-white hover:bg-gray-600">
                     <div className="flex-1">
                       <h3 className="text-xl font-bold">{event.title}</h3>
                       <p>{event.categoryName}</p>
@@ -91,7 +91,7 @@ export const UserPage = () => {
             <div className="bg-white shadow-lg rounded-lg p-4">
               {user?.data?.attendances?.length > 0 ? (
                 user.data.attendances.map(attendance => (
-                  <Link to={`/main/event/${attendance.eventId}`} key={attendance.id} className="flex justify-between p-3 rounded-md hover:text-white hover:bg-gray-600">
+                  <Link to={`/main/event/${attendance.eventId}`} key={attendance.id} className="flex justify-between p-3 rounded-md transition-colors duration-200 hover:text-white hover:bg-gray-600">
                     <div className="flex-1">
                       <h3 className="text-xl font-bold">{attendance.eventTitle}</h3>
                     </div>
