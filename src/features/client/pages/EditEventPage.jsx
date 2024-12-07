@@ -3,6 +3,7 @@ import { useEvents } from "../hooks/useEvents";
 import { useParams, useNavigate } from "react-router-dom";
 import { useCategories } from "../hooks/useCategories";
 import { useAuthStore } from "../../security/store";
+import { CustomAlerts } from "../../../shared/components";
 
 export const EditEventPage = () => {
   const { id } = useParams();
@@ -21,6 +22,9 @@ export const EditEventPage = () => {
   // Obtener id del usuario desde el token
   const getUserId = useAuthStore((state) => state.getUserId);
   const loggedUserId = getUserId();
+
+  // Estado del alert
+const [alertData, setAlertData] = useState({ message: "", type: "", show: false });
 
   // Cargar categorías
   useEffect(() => {
@@ -66,7 +70,11 @@ export const EditEventPage = () => {
     const currentDate = new Date();
 
     if (selectedDate <= currentDate) {
-      alert("La fecha que intenta ingresar ya pasó.");
+      setAlertData({
+        message: "La fecha que intenta ingresar ya pasó.",
+        type: "error",
+        show: true,
+      });
       return;
     }
 
@@ -79,10 +87,24 @@ export const EditEventPage = () => {
         ubication: formData.ubication,
         date: formData.date,
       });
-      alert("Evento editado correctamente.");
-      navigate(`/main/event/${id}`);
+
+      // Mostrar alert de éxito
+      setAlertData({
+        message: "Evento editado correctamente.",
+        type: "success",
+        show: true,
+      });
+
+      // Redirigir después de 2 segundos
+      setTimeout(() => {
+        navigate(`/main/event/${id}`);
+      }, 2000);
     } catch (error) {
-      console.error("Error al editar el evento:", error);
+      setAlertData({
+        message: "Hubo un error al editar el evento.",
+        type: "error",
+        show: true,
+      });
     }
   };
 
@@ -90,6 +112,16 @@ export const EditEventPage = () => {
     <div className="container mx-auto px-6">
       <main className="flex-1 p-6">
         <h2 className="text-3xl text-white font-bold mb-6">Editar Evento</h2>
+
+        {/* Mostrar el alert si está habilitado */}
+        {alertData.show && (
+          <CustomAlerts
+            message={alertData.message}
+            type={alertData.type}
+            onClose={() => setAlertData((prev) => ({ ...prev, show: false }))}
+          />
+        )}
+
         <form onSubmit={handleSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="title">

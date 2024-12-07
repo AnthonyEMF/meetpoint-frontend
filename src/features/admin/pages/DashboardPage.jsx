@@ -1,7 +1,49 @@
-import { FaRegComment } from "react-icons/fa";
-import { MdOutlinePlaylistAddCheck } from "react-icons/md";
+import { Link } from "react-router-dom";
+import { CategoryDashboardRowItem, EventDashboardRowItem, ReportDashboardRowItem, UserDashboardRowItem } from "../components";
+UserDashboardRowItem
+import { useUsers } from "../../client/hooks/useUsers";
+import { useEffect, useState } from "react";
+import { useCategories, useEvents } from "../../client/hooks";
+import { useReports } from "../../client/hooks/useReports";
 
 export const DashboardPage = () => {
+  const { users, loadUsers, isLoading } = useUsers();
+  const { events, loadEvents } = useEvents();
+  const { categories, loadCategories } = useCategories();
+  const { reports, loadReports } = useReports();
+  const [currentPage] = useState(1);
+  const [searchTerm] = useState("");
+  const [fetching, setFetching] = useState(true);
+
+  useEffect(() => {
+    if (fetching) {
+        loadUsers(searchTerm, currentPage);
+      setFetching(false);
+    }
+  }, [fetching, searchTerm, currentPage]);
+
+  useEffect(() => {
+    if (fetching) {
+      loadEvents(searchTerm, currentPage);
+      setFetching(false);
+    }
+  }, [fetching, searchTerm, currentPage]);
+
+  useEffect(() => {
+    if (fetching) {
+      loadCategories(searchTerm, currentPage);
+      setFetching(false);
+    }
+  }, [fetching, searchTerm, currentPage]);
+
+  useEffect(() => {
+    if (fetching) {
+      loadReports(searchTerm, currentPage);
+      setFetching(false);
+    }
+  }, [fetching, searchTerm, currentPage]);
+
+
     return (
       <div className="min-h-screen">
       {/* Header */}
@@ -13,52 +55,45 @@ export const DashboardPage = () => {
 
       {/* Menu */}
       <nav>
-        <div className="container mx-auto mt-4 px-4 gap-6 grid grid-cols-1 md:grid-cols-3">
-          <button className="px-6 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">
+        <div className="container mx-auto mt-4 px-4 gap-6 grid grid-cols-1 md:grid-cols-4">
+          <Link to="/administration/users-list" className="px-6 py-2 bg-gray-500 text-white text-center rounded hover:bg-gray-600">
             Ver todos los Usuarios
-          </button>
-          <button className="px-6 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">
+          </Link>
+          <Link to="/administration/events-list" className="px-6 py-2 bg-gray-500 text-white text-center rounded hover:bg-gray-600">
             Ver todos los Eventos
-          </button>
-          <button className="px-6 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">
+          </Link>
+          <Link to="/administration/categories-list" className="px-6 py-2 bg-gray-500 text-white text-center rounded hover:bg-gray-600">
             Ver todas las Categorías
-          </button>
+          </Link>
+          <Link to="/administration/reports-list" className="px-6 py-2 bg-gray-500 text-white text-center rounded hover:bg-gray-600">
+            Ver todos los Reportes
+          </Link>
         </div>
       </nav>
 
       {/* Content */}
-      <main className="container mx-auto px-4 py-2 grid grid-cols-1 md:grid-cols-3 gap-6">
+      <main className="container mx-auto px-4 py-2 grid grid-cols-1 md:grid-cols-4 gap-6">
         {/* Usuarios Recientes */}
         <section className="bg-white shadow rounded p-4">
           <h2 className="text-lg font-bold text-gray-700 mb-4">Usuarios Recientes</h2>
           <ul className="space-y-2">
-            <li className="p-4 bg-gray-50 rounded shadow flex justify-between items-center">
-              <div>
-                <p className="font-medium text-gray-700">Juan Pérez</p>
-                <p className="text-sm text-gray-500">juan.perez@email.com</p>
-              </div>
-              <span className="px-2 py-1 bg-green-100 text-green-700 text-sm rounded">
-                Admin
-              </span>
-            </li>
-            <li className="p-4 bg-gray-50 rounded shadow flex justify-between items-center">
-              <div>
-                <p className="font-medium text-gray-700">María López</p>
-                <p className="text-sm text-gray-500">maria.lopez@email.com</p>
-              </div>
-              <span className="px-2 py-1 bg-blue-100 text-blue-700 text-sm rounded">
-                Usuario
-              </span>
-            </li>
-            <li className="p-4 bg-gray-50 rounded shadow flex justify-between items-center">
-              <div>
-                <p className="font-medium text-gray-700">Carlos García</p>
-                <p className="text-sm text-gray-500">carlos.garcia@email.com</p>
-              </div>
-              <span className="px-2 py-1 bg-blue-100 text-blue-700 text-sm rounded">
-                Usuario
-              </span>
-            </li>
+          {isLoading ? (
+              <li>
+                <p colSpan="5" className="px-6 py-4 text-center text-gray-500">
+                  Cargando...
+                </p>
+              </li>
+            ) : users?.data?.items?.length ? (
+              users.data.items.slice(0, 5).map((user) => (
+                <UserDashboardRowItem key={user.id} user={user} />
+              ))
+            ) : (
+              <li>
+                <p colSpan="5" className="px-6 py-4 text-center text-gray-500">
+                  No se encontraron resultados.
+                </p>
+              </li>
+            )}
           </ul>
         </section>
 
@@ -66,54 +101,23 @@ export const DashboardPage = () => {
         <section className="bg-white shadow rounded p-4">
           <h2 className="text-lg font-bold text-gray-700 mb-4">Eventos Recientes</h2>
           <ul className="space-y-2">
-            <li className="p-4 bg-gray-50 rounded shadow flex justify-between items-center">
-                <div>
-                  <p className="font-medium text-gray-700">Conferencia Tech 2024</p>
-                  <p className="text-sm text-gray-500">Categoría: Tecnología</p>
-                </div>
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center text-gray-500 text-sm">
-                  <FaRegComment className="w-5 h-5 mr-1"/>
-                    15
-                  </div>
-                  <div className="flex items-center text-gray-500 text-sm">
-                  <MdOutlinePlaylistAddCheck className="w-5 h-5 mr-1"/>
-                    120
-                  </div>
-                </div>
-            </li>
-            <li className="p-4 bg-gray-50 rounded shadow flex justify-between items-center">
-                <div>
-                  <p className="font-medium text-gray-700">Concierto Rock</p>
-                  <p className="text-sm text-gray-500">Categoría: Música</p>
-                </div>
-                <div className="flex items-center gap-4">
-                <div className="flex items-center text-gray-500 text-sm">
-                  <FaRegComment className="w-5 h-5 mr-1"/>
-                    8
-                  </div>
-                  <div className="flex items-center text-gray-500 text-sm">
-                  <MdOutlinePlaylistAddCheck className="w-5 h-5 mr-1"/>
-                    45
-                  </div>
-                </div>
-            </li>
-            <li className="p-4 bg-gray-50 rounded shadow flex justify-between items-center">
-                <div>
-                  <p className="font-medium text-gray-700">Partido de Futbol</p>
-                  <p className="text-sm text-gray-500">Categoría: Deportes</p>
-                </div>
-                <div className="flex items-center gap-4">
-                <div className="flex items-center text-gray-500 text-sm">
-                  <FaRegComment className="w-5 h-5 mr-1"/>
-                    10
-                  </div>
-                  <div className="flex items-center text-gray-500 text-sm">
-                  <MdOutlinePlaylistAddCheck className="w-5 h-5 mr-1"/>
-                    30
-                  </div>
-                </div>
-            </li>
+          {isLoading ? (
+              <li>
+                <p colSpan="5" className="px-6 py-4 text-center text-gray-500">
+                  Cargando...
+                </p>
+              </li>
+            ) : events?.data?.items?.length ? (
+              events.data.items.slice(0, 5).map((event) => (
+                <EventDashboardRowItem key={event.id} event={event}/>
+              ))
+            ) : (
+              <li>
+                <p colSpan="5" className="px-6 py-4 text-center text-gray-500">
+                  No se encontraron resultados.
+                </p>
+              </li>
+            )}
           </ul>
         </section>
 
@@ -121,24 +125,47 @@ export const DashboardPage = () => {
         <section className="bg-white shadow rounded p-4">
           <h2 className="text-lg font-bold text-gray-700 mb-4">Categorías Recientes</h2>
           <ul className="space-y-2">
-            <li className="p-4 bg-gray-50 rounded shadow flex justify-between items-center">
-              <div>
-              <p className="font-medium text-gray-700">Tecnología</p>
-              <p className="text-sm text-gray-500">Conferencias y meetups tech.</p>
-              </div>
-            </li>
-            <li className="p-4 bg-gray-50 rounded shadow flex justify-between items-center">
-              <div>
-                <p className="font-medium text-gray-700">Música</p>
-                <p className="text-sm text-gray-500">Conciertos, festivales y más.</p>
-              </div>
-            </li>
-            <li className="p-4 bg-gray-50 rounded shadow flex justify-between items-center">
-              <div>
-                <p className="font-medium text-gray-700">Arte</p>
-                <p className="text-sm text-gray-500">Exposiciones, museos y más.</p>
-              </div>
-            </li>
+          {isLoading ? (
+              <li>
+                <p colSpan="5" className="px-6 py-4 text-center text-gray-500">
+                  Cargando...
+                </p>
+              </li>
+            ) : categories?.data?.items?.length ? (
+              categories.data.items.slice(0, 5).map((category) => (
+                <CategoryDashboardRowItem key={category.id} category={category} />
+              ))
+            ) : (
+              <li>
+                <p colSpan="5" className="px-6 py-4 text-center text-gray-500">
+                  No se encontraron resultados.
+                </p>
+              </li>
+            )}
+          </ul>
+        </section>
+
+        {/* Reportes Recientes */}
+        <section className="bg-white shadow rounded p-4">
+          <h2 className="text-lg font-bold text-gray-700 mb-4">Reportes Recientes</h2>
+          <ul className="space-y-2">
+          {isLoading ? (
+              <li>
+                <p colSpan="5" className="px-6 py-4 text-center text-gray-500">
+                  Cargando...
+                </p>
+              </li>
+            ) : reports?.data?.items?.length ? (
+              reports.data.items.slice(0, 5).map((report) => (
+                <ReportDashboardRowItem key={report.id} report={report} />
+              ))
+            ) : (
+              <li>
+                <p colSpan="5" className="px-6 py-4 text-center text-gray-500">
+                  No se encontraron resultados.
+                </p>
+              </li>
+            )}
           </ul>
         </section>
       </main>

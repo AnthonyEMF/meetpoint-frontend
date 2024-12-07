@@ -39,7 +39,7 @@ export const UserPage = () => {
           </div>
           <div>
             <h2 className="text-2xl font-semibold">
-              {user?.data?.firstName} {user?.data?.lastName}
+            {user?.data?.firstName} {user?.data?.lastName}
             </h2>
             <p className="py-1 text-gray-700">{user?.data?.email}</p>
             <p className="text-gray-700">{user?.data?.location}</p>

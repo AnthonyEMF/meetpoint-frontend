@@ -1,9 +1,10 @@
 import { formatDate } from "../../../shared/utils";
 import { useEvents } from "../hooks";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Attendances, Comments, EventPageSkeleton } from "../components";
 import { useAuthStore } from "../../security/store";
+import { CustomAlerts } from "../../../shared/components";
 
 export const EventPage = () => {
   const { id } = useParams();
@@ -14,6 +15,8 @@ export const EventPage = () => {
   // Obtener id del usuario desde el token
   const getUserId = useAuthStore((state) => state.getUserId);
   const loggedUserId = getUserId();
+
+  const [showAlert, setShowAlert] = useState(false);
 
   useEffect(() => {
     if (fetching) {
@@ -38,13 +41,13 @@ export const EventPage = () => {
 
   // Eliminación del evento
   const handleDeleteEvent = async () => {
-    const confirmDelete = window.confirm(
-      "¿Está seguro de que desea eliminar este evento?"
-    );
-    if (confirmDelete) {
-      await deleteEvent(event.data.id);
-      navigate("/main");
-    }
+    setShowAlert(true); // Mostrar alerta personalizada
+  };
+
+  const confirmDeleteEvent = async () => {
+    await deleteEvent(event.data.id);
+    setShowAlert(false); // Ocultar alerta
+    navigate("/main");
   };
 
   const handleAttendancesChange = async () => {
@@ -58,6 +61,15 @@ export const EventPage = () => {
   return (
     <div className="container mx-auto p-6">
       
+      {showAlert && (
+        <CustomAlerts
+          message="¿Está seguro de que desea eliminar este evento?"
+          type="warning"
+          onConfirm={confirmDeleteEvent}
+          onClose={() => setShowAlert(false)}
+        />
+      )}
+
       {/* Información del Evento */}
       {isLoading ? (
         <EventPageSkeleton />
@@ -79,7 +91,9 @@ export const EventPage = () => {
         <div className="w-full md:w-30 md:pl-4 flex flex-col items-end">
           <p className="mb-2 self-end">
             Organizado por{" "}
+            <Link to={`/user/view/${event.data.organizerId}`}>
             <span className="font-bold">{event.data.organizerName}</span>
+            </Link>
           </p>
           {isOrganizer && (
             <div>

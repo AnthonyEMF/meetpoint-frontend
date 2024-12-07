@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useEvents } from "../hooks/useEvents";
 import { useNavigate } from "react-router-dom";
 import { useCategories } from "../hooks/useCategories";
+import { CustomAlerts } from "../../../shared/components";
 
 export const CreateEventPage = () => {
   const navigate = useNavigate();
@@ -15,6 +16,9 @@ export const CreateEventPage = () => {
     ubication: "",
     date: "",
   });
+
+// Estado del alert
+const [alertData, setAlertData] = useState({ message: "", type: "", show: false });
 
   // Cargar categorías
   useEffect(() => {
@@ -40,16 +44,34 @@ export const CreateEventPage = () => {
     const currentDate = new Date();
 
     if (selectedDate <= currentDate) {
-      alert("La fecha que intenta ingresar ya pasó.");
+      setAlertData({
+        message: "La fecha que intenta ingresar ya pasó.",
+        type: "error",
+        show: true,
+      });
       return;
     }
 
     try {
       await createEvent(eventData);
-      alert("Evento creado correctamente.");
-      navigate("/main");
+
+      // Mostrar alert de éxito
+      setAlertData({
+        message: "Evento creado correctamente.",
+        type: "success",
+        show: true,
+      });
+
+      // Redirigir después de 2 segundos
+      setTimeout(() => {
+        navigate("/main");
+      }, 2000);
     } catch (error) {
-      alert("Hubo un error al crear el evento.");
+      setAlertData({
+        message: "Hubo un error al crear el evento.",
+        type: "error",
+        show: true,
+      });
     }
   };
 
@@ -59,6 +81,16 @@ export const CreateEventPage = () => {
         <h2 className="text-3xl text-white font-bold mb-6">
           Crear Nuevo Evento
         </h2>
+
+        {/* Mostrar el alert si está habilitado */}
+        {alertData.show && (
+          <CustomAlerts
+            message={alertData.message}
+            type={alertData.type}
+            onClose={() => setAlertData((prev) => ({ ...prev, show: false }))}
+          />
+        )}
+
         <form
           onSubmit={handleSubmit}
           className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
