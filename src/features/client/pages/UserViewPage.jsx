@@ -85,7 +85,7 @@ export const UserViewPage = () => {
         <div className="ml-auto">
           {/* Restringir botones de eliminar y editar solo para administración */}
           <ProtectedComponent requiredRoles={[rolesListConstant.ADMIN]}>
-            <Link to={`administration/user/edit/${user.id}`}>
+            <Link to={`/administration/user/edit/${user.id}`}>
               <button className="bg-blue-500 text-white w-full my-1 py-2 px-4 rounded hover:bg-blue-400">
                 Editar
               </button>
