@@ -3,6 +3,8 @@ import { useAttendances } from "../hooks/useAttendances";
 import { useAuthStore } from "../../security/store";
 import { Link } from "react-router-dom";
 import { PiWarningCircleBold } from "react-icons/pi";
+import { useRatings } from "../hooks/useRatings";
+import { useUsers } from "../hooks/useUsers";
 
 export const Attendances = ({ event, handleAttendancesChange }) => {
   const {
@@ -14,18 +16,34 @@ export const Attendances = ({ event, handleAttendancesChange }) => {
   } = useAttendances();
   const [currentAttendance, setCurrentAttendance] = useState(null);
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  // Propiedades y funciones para el rating
+  const [rating, setRating] = useState(null);
+  const [setIsRatingSubmitted] = useState(false);
+  const { createRating } = useRatings();
+  // información del usuario
+  const { user, loadUserById } = useUsers();
+  const [fetching, setFetching] = useState(true);
 
   // Obtener id del usuario desde el token
   const getUserId = useAuthStore((state) => state.getUserId);
   const loggedUserId = getUserId();
 
-  // Validar si el usuario tiene una asistencia registrada
   useEffect(() => {
+    // Cargar el usuario para verificar los ratings
+    loadUserById(loggedUserId)
+      .then(() => setFetching(false))
+      .catch(() => setFetching(false));
+
     const userAttendance = event.data.attendances.find(
       (attendance) => attendance.userId === loggedUserId
     );
     setCurrentAttendance(userAttendance || null);
-  }, [event.data.attendances]);
+  }, [event.data.attendances, loggedUserId, loadUserById]);
+
+  // Verificar si el usuario ya ha calificado el evento
+  const hasRated = user?.data?.madeRatings?.some(
+    (rating) => rating.eventId === event.data.id
+  );
 
   // Crear asistencia
   const handleConfirmAttendance = async () => {
@@ -63,6 +81,27 @@ export const Attendances = ({ event, handleAttendancesChange }) => {
     if (result) {
       setCurrentAttendance(null); // Eliminar la asistencia localmente
       if (handleAttendancesChange) handleAttendancesChange();
+    }
+  };
+
+  // Manejar cambio en la calificación
+  const handleRatingChange = (e) => {
+    setRating(e.target.value);
+  };
+
+  // Enviar la calificación
+  const handleSubmitRating = async () => {
+    if (rating < 0 || rating > 5) return alert("La calificación debe estar entre 0 y 5");
+
+    const ratingData = {
+      eventId: event.data.id,
+      organizerId: event.data.organizerId,
+      score: parseFloat(rating),
+    };
+
+    const result = await createRating(ratingData);
+    if (result) {
+      setIsRatingSubmitted(true);
     }
   };
 
@@ -162,28 +201,38 @@ export const Attendances = ({ event, handleAttendancesChange }) => {
       )}
 
       {/* Mostrar opción para calificar con estrellas */}
-      {currentAttendance && new Date(event.data.date) < new Date() && (
+      {currentAttendance && event.data.organizerId !== loggedUserId && new Date(event.data.date) < new Date() && !fetching && (
         <div className="mt-4">
-          <h2 className="text-2xl font-bold mb-3 text-center">
-            ¿Qué calificación le das a este evento?
-          </h2>
-          <div className="flex items-center gap-2 justify-center">
-            <input
-            type="number" 
-            min="0" max="5" 
-            step="0.1" 
-            placeholder="0 - 5" 
-            className="p-2 border border-gray-300 rounded" 
-            //onChange={handleRatingChange} 
-            /> 
-            <button 
-            className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700"
-            //onClick={handleSubmitRating} 
-            disabled={isSubmitting} 
-            > Enviar
-            </button> 
-          </div> 
-        </div> 
+          {hasRated ? (
+            <p className="text-center text-xl font-semibold text-blue-600">
+              ¡Gracias por tu calificación, esperamos que asistas al próximo evento!
+            </p>
+          ) : (
+            <>
+              <h2 className="text-2xl font-bold mb-3 text-center">
+                ¿Qué calificación le das a este evento?
+              </h2>
+              <div className="flex items-center gap-2 justify-center">
+                <input
+                  type="number"
+                  min="0"
+                  max="5"
+                  step="0.1"
+                  placeholder="0 - 5"
+                  className="p-2 border border-gray-300 rounded"
+                  onChange={handleRatingChange}
+                />
+                <button
+                  className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700"
+                  onClick={handleSubmitRating}
+                  disabled={isSubmitting}
+                >
+                  Enviar
+                </button>
+              </div>
+            </>
+          )}
+        </div>
       )}
 
       {error && <p className="text-red-500 mt-4">{error.message}</p>}
