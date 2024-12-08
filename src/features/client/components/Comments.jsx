@@ -63,7 +63,9 @@ export const Comments = ({ event, handleCommentsChange }) => {
             event.data.comments.map((comment) => (
               <li key={comment.id} className="bg-gray-200 rounded-md my-2 p-4 flex justify-between items-start">
                 <div className="flex-1">
-                  <p className="font-semibold">{comment.userName}</p>
+                  <Link to={`/user/view/${comment.userId}`}>
+                    <p className="font-semibold">{comment.userName}</p>
+                  </Link>
                   {editingCommentId === comment.id ? (
                     <div>
                       <textarea

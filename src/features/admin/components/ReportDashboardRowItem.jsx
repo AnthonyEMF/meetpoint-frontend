@@ -1,12 +1,36 @@
-export const ReportDashboardRowItem = ({report}) => {
+import { formatDate } from "../../../shared/utils";
+import { useReports } from "../../client/hooks/useReports";
+
+export const ReportDashboardRowItem = ({report, handleReportsChange}) => {
+  const { deleteReport, isSubmitting } = useReports();
+
+  // Eliminar un reporte
+  const handleDeleteReport = async (reportId) => {
+    await deleteReport(reportId);
+    if (handleReportsChange) handleReportsChange();
+  };
+
   return (
-    <li className="p-4 bg-gray-50 rounded shadow flex justify-between items-center">
-        <div>
-            <p className="font-medium text-gray-700">Para: {report.organizerName}</p>
-            <p className="text-sm text-gray-500">De: {report.reporterName}</p>
+    <li className="p-4 bg-gray-200 rounded shadow flex justify-between items-center">
+        <div className="w-1/5">
+            <p className="font-bold text-gray-700">Para: {report.organizerName}</p>
+            <p className="text-sm text-gray-700">De: {report.reporterName}</p>
         </div>
-        <div>
-            <p className="font-medium text-gray-700">{report.reportDate}</p>
+        <div className="w-3/5">
+            <p className="font-medium text-gray-700">
+              <span className="font-bold">Motivo:</span> {report.reason}
+            </p>
+            <p className="font-bold text-gray-700">
+              {formatDate(report.reportDate)}
+            </p>
+        </div>
+        <div className="w-1/5 text-right">
+          <button 
+            className="px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-700"
+            onClick={() => handleDeleteReport(report.id)}
+            disabled={isSubmitting}
+            > Eliminar
+          </button> 
         </div>
     </li>
   )

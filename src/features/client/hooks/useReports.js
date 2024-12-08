@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createReportApi, deletereportApi, editReportApi, getReportById, getReportsList } from "../../../shared/actions/reports/reports.action";
+import { createReportApi, deleteReportApi, editReportApi, getReportById, getReportsList } from "../../../shared/actions/reports/reports.action";
 
 export const useReports = () => {
     const [reports, setReports] = useState({});
@@ -60,7 +60,7 @@ export const useReports = () => {
         setError(null);
 
         try {
-            await deletereportApi(id);
+            await deleteReportApi(id);
             setReport(null);
         } catch (error) {
             setError(error);

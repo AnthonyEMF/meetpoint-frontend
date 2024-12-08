@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { getUserById, createUserApi, getUsersList } from "../../../shared/actions/users";
 
-// TODO: Arreglar
-
 export const useUsers = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState(null);

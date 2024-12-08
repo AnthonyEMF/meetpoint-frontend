@@ -82,7 +82,9 @@ export const Attendances = ({ event, handleAttendancesChange }) => {
                   key={attendance.id}
                   className="bg-gray-200 p-4 rounded-lg flex justify-between items-center"
                 >
-                  <span>{attendance.userName}</span>
+                  <Link to={`/user/view/${attendance.userId}`}>
+                    <span>{attendance.userName}</span>
+                  </Link>
                   <span
                     className={`px-4 py-2 rounded-full text-white ${
                       attendance.state === "CONFIRMADO"
@@ -100,8 +102,8 @@ export const Attendances = ({ event, handleAttendancesChange }) => {
               <span className="text-lg text-gray-600 font-semibold">No hay asistentes registrados.</span>
             )}
           </div>
-          {/* Crear, editar, eliminar asistencia */}
-          {currentAttendance ? (
+          {/* Crear, editar, eliminar asistencia si la fecha del evento no ha expirado */}
+          {currentAttendance && new Date(event.data.date) > new Date() ? (
             <div className="mt-4 flex flex-col gap-2">
               <h3 className="text-lg font-semibold mb-2">
                 Cambiar estado de asistencia:
@@ -140,13 +142,15 @@ export const Attendances = ({ event, handleAttendancesChange }) => {
               </div>
             </div>
           ) : (
-            <button
-              className="mt-4 px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-700"
-              onClick={handleConfirmAttendance}
-              disabled={isSubmitting}
-            >
-              Confirmar Asistencia
-            </button>
+            new Date(event.data.date) > new Date() && (
+              <button
+                className="mt-4 px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-700"
+                onClick={handleConfirmAttendance}
+                disabled={isSubmitting}
+              >
+                Confirmar Asistencia
+              </button>
+            )
           )}
         </div>
       ) : (
@@ -155,6 +159,31 @@ export const Attendances = ({ event, handleAttendancesChange }) => {
             <span className="flex"><PiWarningCircleBold size={22} className="mt-1 mr-1"/>Iniciar sesión para visualizar la lista de asistentes</span>
           </Link>
         </div>
+      )}
+
+      {/* Mostrar opción para calificar con estrellas */}
+      {currentAttendance && new Date(event.data.date) < new Date() && (
+        <div className="mt-4">
+          <h2 className="text-2xl font-bold mb-3 text-center">
+            ¿Qué calificación le das a este evento?
+          </h2>
+          <div className="flex items-center gap-2 justify-center">
+            <input
+            type="number" 
+            min="0" max="5" 
+            step="0.1" 
+            placeholder="0 - 5" 
+            className="p-2 border border-gray-300 rounded" 
+            //onChange={handleRatingChange} 
+            /> 
+            <button 
+            className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700"
+            //onClick={handleSubmitRating} 
+            disabled={isSubmitting} 
+            > Enviar
+            </button> 
+          </div> 
+        </div> 
       )}
 
       {error && <p className="text-red-500 mt-4">{error.message}</p>}

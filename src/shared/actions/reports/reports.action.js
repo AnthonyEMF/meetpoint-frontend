@@ -45,7 +45,7 @@ export const editReportApi = async (id, reportData) => {
 }
 
 // Eliminar
-export const deletereportApi = async (id) => {
+export const deleteReportApi = async (id) => {
     try {
         const {data} = await meetpointApi.delete(`/reports/${id}`);
         return data;

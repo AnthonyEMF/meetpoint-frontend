@@ -43,8 +43,6 @@ export const UsersListPage = () => {
         }
     };
 
-
-
   return (
     <div className="flex flex-col items-center w-full h-full p-4 ">
       <div className="w-full max-w-5xl p-6">
@@ -80,6 +78,12 @@ export const UsersListPage = () => {
               </th>
               <th className="px-6 py-3 text-left text-gray-600 font-medium">
                 ROL
+              </th>
+              <th className="px-6 py-3 text-left text-gray-600 font-medium">
+                REPORTES
+              </th>
+              <th className="px-6 py-3 text-left text-gray-600 font-medium">
+                RATINGS
               </th>
               <th className="px-6 py-3 text-left text-gray-600 font-medium">
                 DETALLES

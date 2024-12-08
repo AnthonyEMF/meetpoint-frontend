@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useEvents } from "../hooks/useEvents";
 import { useParams, useNavigate } from "react-router-dom";
 import { useCategories } from "../hooks/useCategories";
-import { useAuthStore } from "../../security/store";
 import { CustomAlerts } from "../../../shared/components";
 
 export const EditEventPage = () => {
@@ -19,12 +18,8 @@ export const EditEventPage = () => {
     date: "",
   });
 
-  // Obtener id del usuario desde el token
-  const getUserId = useAuthStore((state) => state.getUserId);
-  const loggedUserId = getUserId();
-
   // Estado del alert
-const [alertData, setAlertData] = useState({ message: "", type: "", show: false });
+  const [alertData, setAlertData] = useState({ message: "", type: "", show: false });
 
   // Cargar categorías
   useEffect(() => {
@@ -81,7 +76,6 @@ const [alertData, setAlertData] = useState({ message: "", type: "", show: false 
     try {
       await editEvent(id, {
         categoryId: formData.categoryId,
-        organizerId: loggedUserId,
         title: formData.title,
         description: formData.description,
         ubication: formData.ubication,

@@ -1,67 +1,26 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useUsers } from "../hooks/useUsers";
-import { useAuthStore } from "../../security/store";
 import { formatDate } from "../../../shared/utils";
-import { useEvents } from "../hooks";
-
-// Componente para mostrar estrellas de calificación
-const StarRating = ({ rating }) => {
-  const fullStars = Math.floor(rating);
-  const hasHalfStar = rating % 1 !== 0;
-
-  return (
-    <div className="flex items-center">
-      {[...Array(5)].map((_, index) => {
-        if (index < fullStars) {
-          return (
-            <span key={index} className="text-yellow-500 text-2xl">
-              ★
-            </span>
-          );
-        } else if (index === fullStars && hasHalfStar) {
-          return (
-            <span key={index} className="text-yellow-500 text-2xl">
-              ☆
-            </span>
-          );
-        } else {
-          return (
-            <span key={index} className="text-gray-300 text-2xl">
-              ★
-            </span>
-          );
-        }
-      })}
-      <span className="ml-2 text-gray-700">{rating.toFixed(1)}</span>
-    </div>
-  );
-};
+import { useAuthStore } from "../../security/store";
+import { ProtectedComponent, StarRating } from "../../../shared/components";
+import { rolesListConstant } from "../../../shared/constants";
 
 export const UserViewPage = () => {
   const [fetching, setFetching] = useState(true);
   const { user, loadUserById } = useUsers();
-  const { event, loadEventById } = useEvents();
   const { id } = useParams();
 
+  // Obtener id del usuario desde el token
   const getUserId = useAuthStore((state) => state.getUserId);
-  const OrganizerUserId = getUserId();
+  const loggedUserId = getUserId();
 
   useEffect(() => {
     if (fetching) {
-      loadUserById(OrganizerUserId);
+      loadUserById(id);
       setFetching(false);
     }
   }, [fetching, loadUserById]);
-
-  useEffect(() => {
-    if (fetching) {
-      if (id) {
-        loadEventById(id);
-        setFetching(false);
-      }
-    }
-  }, [fetching]);
 
   return (
     <div className="container mx-auto p-6">
@@ -71,27 +30,46 @@ export const UserViewPage = () => {
           <div className="mr-8">
             <img
               className="w-32 h-32 rounded-full"
-              src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=1780&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              src="https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg"
               alt="Profile"
             />
           </div>
           <div>
             <h2 className="text-2xl font-semibold">
-            {event?.data?.organizerId}
+            {user?.data?.firstName} {user?.data?.lastName}
             </h2>
             <p className="py-1 text-gray-700">{user?.data?.email}</p>
             <p className="text-gray-700">{user?.data?.location}</p>
             <div className="mt-2">
-              <StarRating rating={user?.data?.rating || 3.5} />
+              <StarRating rating={user?.data?.averageRating || 0} />
             </div>
           </div>
         </div>
         <div className="ml-auto">
-          <Link to="/home">
-            <button className="bg-red-600 text-white w-full py-2 px-4 rounded hover:bg-red-500">
-              Reportar
+          {/* Restringir botones de eliminar y editar solo para administración */}
+          <ProtectedComponent requiredRoles={[rolesListConstant.ADMIN]}>
+            <Link to={`administration/user/edit/${user.id}`}> 
+              <button className="bg-blue-500 text-white w-full my-1 py-2 px-4 rounded hover:bg-blue-400">
+                Editar
+              </button>
+            </Link>
+            <button 
+              className="bg-red-600 text-white w-full my-1 py-2 px-4 rounded hover:bg-red-500">
+              Eliminar
             </button>
-          </Link>
+          </ProtectedComponent>
+
+          {/* Validar que el usuario en sesión no se pueda reportar a si mismo */}
+          {loggedUserId != id && (
+            <div>
+              <Link to="/home">
+                <button className="font-semibold bg-white text-red-500 border-2 border-red-500 rounded-lg hover:bg-red-500 hover:text-white w-full my-1 py-2 px-4">
+                  Reportar
+                </button>
+              </Link>
+            </div>
+          )}
+          
         </div>
       </div>
 

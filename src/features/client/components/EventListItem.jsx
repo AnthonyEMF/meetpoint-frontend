@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { formatDate } from "../../../shared/utils";
+import { useAuthStore } from "../../security/store";
 
 // Imágenes por defecto para cada Categoría
 const categoryImages = {
@@ -19,6 +20,7 @@ const categoryImages = {
 
 export const EventListItem = ({ event }) => {
   const navigate = useNavigate();
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
   const handleCardClick = () => {
     navigate(`/main/event/${event.id}`);
@@ -29,9 +31,17 @@ export const EventListItem = ({ event }) => {
       <div className="flex-grow p-6">
         <h3 className="text-xl font-bold mb-2">{event.title}</h3>
         <p className="text-gray-600 mb-1">{formatDate(event.date)}</p>
-        <p className="text-gray-600 mb-1">{event.ubication}</p>
+
+        {isAuthenticated && ( // Mostrar si esta autenticado
+          <p className="text-gray-600 mb-1">{event.ubication}</p>
+        )}
+
         <p className="text-gray-600">{event.categoryName}</p>
-        <p className="mt-4 inline-block text-blue-800 text-sm">Organizado por <span className="font-bold">{event.organizerName}</span></p>
+
+        {isAuthenticated && ( // Mostrar si esta autenticado
+          <p className="mt-4 inline-block text-blue-800 text-sm">Organizado por <span className="font-bold">{event.organizerName}</span></p>
+        )}
+
       </div>
       <div className="w-20 h-full">
         <img

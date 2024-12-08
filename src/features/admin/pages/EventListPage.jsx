@@ -47,7 +47,7 @@ export const EventListPage = () => {
 
   return (
     <div className="flex flex-col items-center w-full h-full p-4 ">
-      <div className="w-full max-w-5xl p-6">
+      <div className="w-full p-6">
         <div className="flex items-center justify-between pb-4">
           <h1 className="text-4xl font-bold text-white">Eventos</h1>
           <form onSubmit={handleSubmit}>
@@ -76,7 +76,7 @@ export const EventListPage = () => {
                 TITULO
               </th>
               <th className="px-6 py-3 text-left text-gray-600 font-medium tracking-wider">
-                CATEGORIA
+                CATEGORÍA
               </th>
               <th className="px-6 py-3 text-left text-gray-600 font-medium tracking-wider">
                 ORGANIZADOR
@@ -88,7 +88,7 @@ export const EventListPage = () => {
                 COMENTARIOS
               </th>
               <th className="px-6 py-3 text-left text-gray-600 font-medium tracking-wider">
-                ASISTENTES
+                ASISTENCIAS
               </th>
               <th className="px-6 py-3 text-left text-gray-600 font-medium tracking-wider">
                 DETALLES

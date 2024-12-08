@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useUsers } from "../hooks/useUsers";
 import { formatDate } from "../../../shared/utils";
 import { useAuthStore } from "../../security/store/useAuthStore";
+import { StarRating } from "../../../shared/components";
 
 export const UserPage = () => {
   const logout = useAuthStore((state) => state.logout);
@@ -33,7 +34,7 @@ export const UserPage = () => {
           <div className="mr-8">
             <img
               className="w-32 h-32 rounded-full"
-              src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=1780&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              src="https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg"
               alt="Profile"
             />
           </div>
@@ -43,6 +44,9 @@ export const UserPage = () => {
             </h2>
             <p className="py-1 text-gray-700">{user?.data?.email}</p>
             <p className="text-gray-700">{user?.data?.location}</p>
+            <div className="mt-2">
+              <StarRating rating={user?.data?.averageRating || 0} />
+            </div>
           </div>
         </div>
         <div className="ml-auto">

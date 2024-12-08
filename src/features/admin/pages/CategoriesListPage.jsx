@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Pagination } from "../../../shared/components";
 import { useCategories } from "../../client/hooks";
 import { CategoriesRowItem } from "../components";
+import { Link } from "react-router-dom";
 
 export const CategoriesListPage = () => {
     const {categories, loadCategories, isLoading} = useCategories();
@@ -43,8 +44,6 @@ export const CategoriesListPage = () => {
         }
     };
 
-
-
   return (
     <div className="flex flex-col items-center w-full h-full p-4 ">
       <div className="w-full max-w-5xl p-6">
@@ -52,7 +51,6 @@ export const CategoriesListPage = () => {
           <h1 className="text-4xl font-bold text-white">Categorías</h1>
           <form onSubmit={handleSubmit}>
             <div className="flex">
-
               <input
                 type="text"
                 placeholder="Buscar categoría..."
@@ -65,8 +63,15 @@ export const CategoriesListPage = () => {
                   className="bg-gray-600 text-white px-4 py-2 rounded-r-md hover:bg-gray-500"
                 > Buscar
                 </button>
+                <Link
+                  className="bg-green-500 text-white px-4 py-2 rounded ml-2 hover:bg-green-400" 
+                  to={`administration/categories-list/new`} // Mandar al CreateCategoryPage
+                >
+                  Nueva categoría
+                </Link>
             </div>
             </form>
+            
         </div>
         
         <table className="min-w-full mt-3  bg-gray-100 rounded-lg">
@@ -76,7 +81,10 @@ export const CategoriesListPage = () => {
                 NOMBRE
               </th>
               <th className="px-6 py-3 text-left text-gray-600 font-medium tracking-wider">
-                DESCRIPCION
+                DESCRIPCIÓN
+              </th>
+              <th className="px-6 py-3 text-left text-gray-600 font-medium tracking-wider">
+                ACCIONES
               </th>
             </tr>
           </thead>
