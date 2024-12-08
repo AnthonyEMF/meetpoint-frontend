@@ -4,6 +4,7 @@ import { useUsers } from "../hooks/useUsers";
 import { formatDate } from "../../../shared/utils";
 import { useAuthStore } from "../../security/store/useAuthStore";
 import { StarRating } from "../../../shared/components";
+import { IoStatsChart } from "react-icons/io5";
 
 export const UserPage = () => {
   const logout = useAuthStore((state) => state.logout);
@@ -44,8 +45,10 @@ export const UserPage = () => {
             </h2>
             <p className="py-1 text-gray-700">{user?.data?.email}</p>
             <p className="text-gray-700">{user?.data?.location}</p>
-            <div className="mt-2">
+            <div className="mt-2 flex items-center">
               <StarRating rating={user?.data?.averageRating || 0} />
+              <IoStatsChart size={14} className="text-gray-700 mt-1 mx-1" />
+              <span className="text-base text-gray-700">({user?.data?.ratingsCount})</span>
             </div>
           </div>
         </div>
