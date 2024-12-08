@@ -7,10 +7,12 @@ import { ProtectedComponent, StarRating } from "../../../shared/components";
 import { rolesListConstant } from "../../../shared/constants";
 import { IoStatsChart } from "react-icons/io5";
 import { useReports } from "../hooks/useReports";
+import { useUsersStore } from "../../admin/store/useUsersStore";
 
 export const UserViewPage = () => {
   const [fetching, setFetching] = useState(true);
   const { user, loadUserById } = useUsers();
+  const { deleteUser } = useUsersStore();
   const navigate = useNavigate();
   const { id } = useParams();
 
@@ -28,6 +30,17 @@ export const UserViewPage = () => {
       setFetching(false);
     }
   }, [fetching, loadUserById, loggedUserId]);
+
+  // Eliminar usuario
+  const handleDeleteUser = async () => {
+    try {
+      await deleteUser(id);
+      alert("Usuario eliminado correctamente.");
+      navigate("/administration/users-list");
+    } catch (error) {
+      console.error("Error al eliminar el usuario:", error);
+    }
+  };
 
   // Verificar si el usuario en sesión ya ha reportado al usuario
   const hasReported = user?.data?.reports?.some(
@@ -85,14 +98,19 @@ export const UserViewPage = () => {
         <div className="ml-auto">
           {/* Restringir botones de eliminar y editar solo para administración */}
           <ProtectedComponent requiredRoles={[rolesListConstant.ADMIN]}>
-            <Link to={`/administration/user/edit/${user.id}`}>
+            <Link to={`/administration/user/edit/${id}`}>
               <button className="bg-blue-500 text-white w-full my-1 py-2 px-4 rounded hover:bg-blue-400">
                 Editar
               </button>
             </Link>
-            <button className="bg-red-600 text-white w-full my-1 py-2 px-4 rounded hover:bg-red-500">
-              Eliminar
-            </button>
+            {loggedUserId != id && (
+              <button
+                className="bg-red-600 text-white w-full my-1 py-2 px-4 rounded hover:bg-red-500"
+                onClick={handleDeleteUser}
+                >
+                Eliminar
+              </button>
+            )}
           </ProtectedComponent>
         </div>
       </div>

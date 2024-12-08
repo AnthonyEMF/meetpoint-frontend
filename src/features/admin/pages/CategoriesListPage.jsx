@@ -5,44 +5,49 @@ import { CategoriesRowItem } from "../components";
 import { Link } from "react-router-dom";
 
 export const CategoriesListPage = () => {
-    const {categories, loadCategories, isLoading} = useCategories();
-    const [currentPage, setCurrentPage] = useState(1);
-    const [searchTerm, setSearchTerm] = useState("");
-    const [fetching, setFetching] = useState(true);
+  const { categories, loadCategories, isLoading } = useCategories();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [fetching, setFetching] = useState(true);
 
-    useEffect(() => {
-        if (fetching) {
-            loadCategories(searchTerm, currentPage);
-          setFetching(false);
-        }
-      }, [fetching, searchTerm, currentPage]);
+  useEffect(() => {
+    if (fetching) {
+      loadCategories(searchTerm, currentPage);
+      setFetching(false);
+    }
+  }, [fetching, searchTerm, currentPage]);
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        setFetching(true);
-    };  
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setFetching(true);
+  };
 
-      // Cambiar a una página especifica
-    const handleCurrentPage = (index = 1) => {
-        setCurrentPage(index);
-        setFetching(true);
-    };
+  // Cambiar a una página especifica
+  const handleCurrentPage = (index = 1) => {
+    setCurrentPage(index);
+    setFetching(true);
+  };
 
-    // Ir a página anterior
-    const handlePreviousPage = () => {
-        if (category.data.hasPreviousPage) {
-          setCurrentPage((prevPage) => prevPage - 1);
-          setFetching(true);
-        }
-    };
+  // Ir a página anterior
+  const handlePreviousPage = () => {
+    if (category.data.hasPreviousPage) {
+      setCurrentPage((prevPage) => prevPage - 1);
+      setFetching(true);
+    }
+  };
 
-      // Ir a página siguiente
-    const handleNextPage = () => {
-        if (category.data.hasNextPage) {
-         setCurrentPage((prevPage) => prevPage + 1);
-         setFetching(true);
-        }
-    };
+  // Ir a página siguiente
+  const handleNextPage = () => {
+    if (category.data.hasNextPage) {
+      setCurrentPage((prevPage) => prevPage + 1);
+      setFetching(true);
+    }
+  };
+
+  // Actualizar categorías
+  const handleCategoriesChange = async () => {
+    await loadCategories(searchTerm, currentPage);
+  };
 
   return (
     <div className="flex flex-col items-center w-full h-full p-4 ">
@@ -57,23 +62,24 @@ export const CategoriesListPage = () => {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="px-4 py-2 border rounded-lg rounded-r-none focus:outline-none focus:border-gray-500"
-                />
-                <button
-                  type="submit"
-                  className="bg-gray-600 text-white px-4 py-2 rounded-r-md hover:bg-gray-500"
-                > Buscar
-                </button>
-                <Link
-                  className="bg-green-500 text-white px-4 py-2 rounded ml-2 hover:bg-green-400" 
-                  to={`/administration/categories-list/new`} // Mandar al CreateCategoryPage
-                >
-                  Nueva categoría
-                </Link>
+              />
+              <button
+                type="submit"
+                className="bg-gray-600 text-white px-4 py-2 rounded-r-md hover:bg-gray-500"
+              >
+                {" "}
+                Buscar
+              </button>
+              <Link
+                className="bg-green-500 text-white px-4 py-2 rounded ml-2 hover:bg-green-400"
+                to={`/administration/categories-list/new`} // Mandar al CreateCategoryPage
+              >
+                Nueva categoría
+              </Link>
             </div>
-            </form>
-            
+          </form>
         </div>
-        
+
         <table className="min-w-full mt-3  bg-gray-100 rounded-lg">
           <thead>
             <tr>
@@ -89,7 +95,7 @@ export const CategoriesListPage = () => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-          {isLoading ? (
+            {isLoading ? (
               <tr>
                 <td colSpan="2" className="px-6 py-4 text-center text-gray-500">
                   Cargando...
@@ -97,7 +103,11 @@ export const CategoriesListPage = () => {
               </tr>
             ) : categories?.data?.items?.length ? (
               categories.data.items.map((category) => (
-                <CategoriesRowItem key={category.id} category={category} />
+                <CategoriesRowItem
+                  key={category.id}
+                  category={category}
+                  handleCategoriesChange={handleCategoriesChange}
+                />
               ))
             ) : (
               <tr>
@@ -124,5 +134,5 @@ export const CategoriesListPage = () => {
         />
       </div>
     </div>
-  )
-}
+  );
+};

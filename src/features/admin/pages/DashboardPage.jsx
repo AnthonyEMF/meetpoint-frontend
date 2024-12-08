@@ -52,34 +52,34 @@ export const DashboardPage = () => {
   // Actualizar reportes
   const handleReportsChange = async () => {
     await loadReports(searchTerm, currentPage);
-  }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setFetching(true);
-};  
+  };
 
   // Cambiar a una página especifica
-const handleCurrentPage = (index = 1) => {
+  const handleCurrentPage = (index = 1) => {
     setCurrentPage(index);
     setFetching(true);
-};
+  };
 
-// Ir a página anterior
-const handlePreviousPage = () => {
+  // Ir a página anterior
+  const handlePreviousPage = () => {
     if (category.data.hasPreviousPage) {
       setCurrentPage((prevPage) => prevPage - 1);
       setFetching(true);
     }
-};
+  };
 
   // Ir a página siguiente
-const handleNextPage = () => {
+  const handleNextPage = () => {
     if (category.data.hasNextPage) {
-     setCurrentPage((prevPage) => prevPage + 1);
-     setFetching(true);
+      setCurrentPage((prevPage) => prevPage + 1);
+      setFetching(true);
     }
-};
+  };
 
   return (
     <div className="min-h-screen">
@@ -209,22 +209,24 @@ const handleNextPage = () => {
         <section className="bg-white shadow rounded p-4">
           <h2 className="text-lg font-bold text-gray-700 mb-3">
             <div className="flex justify-center items-center">
-            <span className="text-2xl mb-2">Reportes de usuarios</span>
+              <span className="text-2xl mb-2">Reportes de usuarios</span>
             </div>
             <div className="flex items-center">
-
-            <input
+              <input
                 type="text"
                 placeholder="Buscar reporte..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full px-4 py-2 border rounded-lg rounded-r-none focus:outline-none focus:border-gray-500"
-                />
-            <button onSubmit={handleSubmit}
-                  type="submit"
-                  className="bg-gray-600 text-white px-4 py-2 rounded-r-md hover:bg-gray-500"
-                  > Buscar
-                </button>
+              />
+              <button
+                onSubmit={handleSubmit}
+                type="submit"
+                className="bg-gray-600 text-white px-4 py-2 rounded-r-md hover:bg-gray-500"
+              >
+                {" "}
+                Buscar
+              </button>
             </div>
           </h2>
           <ul className="space-y-2">
@@ -238,7 +240,11 @@ const handleNextPage = () => {
               reports.data.items
                 .slice(0, 5)
                 .map((report) => (
-                  <ReportDashboardRowItem key={report.id} report={report} handleReportsChange={handleReportsChange} />
+                  <ReportDashboardRowItem
+                    key={report.id}
+                    report={report}
+                    handleReportsChange={handleReportsChange}
+                  />
                 ))
             ) : (
               <li>
@@ -250,18 +256,18 @@ const handleNextPage = () => {
           </ul>
 
           {/* Paginación */}
-      <div className="mt-6 mb-6">
-        <Pagination
-          totalPages={reports?.data?.totalPages}
-          hasNextPage={reports?.data?.hasNextPage}
-          hasPreviousPage={reports?.data?.hasPreviousPage}
-          currentPage={currentPage}
-          handleNextPage={handleNextPage}
-          handlePreviousPage={handlePreviousPage}
-          setCurrentPage={setCurrentPage}
-          handleCurrentPage={handleCurrentPage}
-        />
-      </div>
+          <div className="mt-6 mb-6">
+            <Pagination
+              totalPages={reports?.data?.totalPages}
+              hasNextPage={reports?.data?.hasNextPage}
+              hasPreviousPage={reports?.data?.hasPreviousPage}
+              currentPage={currentPage}
+              handleNextPage={handleNextPage}
+              handlePreviousPage={handlePreviousPage}
+              setCurrentPage={setCurrentPage}
+              handleCurrentPage={handleCurrentPage}
+            />
+          </div>
         </section>
       </div>
     </div>

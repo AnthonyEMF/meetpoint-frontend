@@ -4,46 +4,44 @@ import { useEvents } from "../../client/hooks";
 import { EventRowItem } from "../components";
 
 export const EventListPage = () => {
-    const {events, loadEvents, isLoading } = useEvents();
-    const [currentPage, setCurrentPage] = useState(1);
-    const [searchTerm, setSearchTerm] = useState("");
-    const [fetching, setFetching] = useState(true);
+  const { events, loadEvents, isLoading } = useEvents();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [fetching, setFetching] = useState(true);
 
-    useEffect(() => {
-        if (fetching) {
-            loadEvents(searchTerm, currentPage);
-          setFetching(false);
-        }
-      }, [fetching, searchTerm, currentPage]);
+  useEffect(() => {
+    if (fetching) {
+      loadEvents(searchTerm, currentPage);
+      setFetching(false);
+    }
+  }, [fetching, searchTerm, currentPage]);
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        setFetching(true);
-    };  
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setFetching(true);
+  };
 
-      // Cambiar a una página especifica
-    const handleCurrentPage = (index = 1) => {
-        setCurrentPage(index);
-        setFetching(true);
-    };
+  // Cambiar a una página especifica
+  const handleCurrentPage = (index = 1) => {
+    setCurrentPage(index);
+    setFetching(true);
+  };
 
-    // Ir a página anterior
-    const handlePreviousPage = () => {
-        if (event.data.hasPreviousPage) {
-          setCurrentPage((prevPage) => prevPage - 1);
-          setFetching(true);
-        }
-    };
+  // Ir a página anterior
+  const handlePreviousPage = () => {
+    if (event.data.hasPreviousPage) {
+      setCurrentPage((prevPage) => prevPage - 1);
+      setFetching(true);
+    }
+  };
 
-      // Ir a página siguiente
-    const handleNextPage = () => {
-        if (event.data.hasNextPage) {
-         setCurrentPage((prevPage) => prevPage + 1);
-         setFetching(true);
-        }
-    };
-
-
+  // Ir a página siguiente
+  const handleNextPage = () => {
+    if (event.data.hasNextPage) {
+      setCurrentPage((prevPage) => prevPage + 1);
+      setFetching(true);
+    }
+  };
 
   return (
     <div className="flex flex-col items-center w-full h-full p-4 ">
@@ -52,23 +50,24 @@ export const EventListPage = () => {
           <h1 className="text-4xl font-bold text-white">Eventos</h1>
           <form onSubmit={handleSubmit}>
             <div className="flex">
-
               <input
                 type="text"
                 placeholder="Buscar evento..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="px-4 py-2 border rounded-lg rounded-r-none focus:outline-none focus:border-gray-500"
-                />
-                <button
-                  type="submit"
-                  className="bg-gray-600 text-white px-4 py-2 rounded-r-lg hover:bg-gray-500"
-                > Buscar
-                </button>
+              />
+              <button
+                type="submit"
+                className="bg-gray-600 text-white px-4 py-2 rounded-r-lg hover:bg-gray-500"
+              >
+                {" "}
+                Buscar
+              </button>
             </div>
-            </form>
+          </form>
         </div>
-        
+
         <table className="min-w-full mt-3 bg-gray-100 rounded-lg shadow-md overflow-hidden">
           <thead>
             <tr>
@@ -96,7 +95,7 @@ export const EventListPage = () => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-          {isLoading ? (
+            {isLoading ? (
               <tr>
                 <td colSpan="7" className="px-6 py-4 text-center text-gray-500">
                   Cargando...
@@ -131,5 +130,5 @@ export const EventListPage = () => {
         />
       </div>
     </div>
-  )
-}
+  );
+};

@@ -23,9 +23,9 @@ export const getCategoryById = async (id) => {
 }
 
 // Crear
-export const createCategoryApi = async (categoryData) => {
+export const createCategoryApi = async (form) => {
     try {
-        const {data} = await meetpointApi.post(`/categories`, categoryData);
+        const {data} = await meetpointApi.post(`/categories`, form);
         return data;
     } catch(error) {
         console.error(error);
@@ -34,9 +34,9 @@ export const createCategoryApi = async (categoryData) => {
 }
 
 // Editar 
-export const editCategoryApi = async (id, categoryData) => {
+export const editCategoryApi = async (id, form) => {
     try {
-        const {data} = await meetpointApi.put(`/categories/${id}`, categoryData);
+        const {data} = await meetpointApi.put(`/categories/${id}`, form);
         return data;
     } catch (error) {
         console.error(error);

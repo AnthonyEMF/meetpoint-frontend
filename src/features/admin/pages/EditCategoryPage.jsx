@@ -2,18 +2,32 @@ import { useParams } from "react-router-dom";
 import { useCategoriesStore } from "../store/useCategoriesStore";
 import { useEffect, useState } from "react";
 import { useFormik } from "formik";
-import {
-  categoryInitValues,
-  categoryValidationSchema,
-} from "../forms/category.data";
+import { categoryInitValues, categoryValidationSchema } from "../forms/category.data";
 import { CustomAlerts } from "../../../shared/components";
 
 export const EditCategoryPage = () => {
   let { id } = useParams();
   const selectedCategory = useCategoriesStore((state) => state.selectedCategory);
   const getCategory = useCategoriesStore((state) => state.getCategory);
-  const [isLoading, setIsLoading] = useState(true);
+  const editCategory = useCategoriesStore((state) => state.editCategory);
   const [alertData, setAlertData] = useState({ message: "", type: "", show: false });
+  const [fetching, setFetching] = useState(true);
+
+  useEffect(() => {
+    if (fetching && id) {
+      getCategory(id).then(() => {
+        // validar que selectedCategory tenga datos antes de actualizar formik
+        if (selectedCategory && selectedCategory.name && selectedCategory.description) {
+          formik.setValues({
+            id: id,
+            name: selectedCategory.name || "",
+            description: selectedCategory.description || "",
+          });
+          setFetching(false);
+        }
+      });
+    }
+  }, [fetching, id, selectedCategory]);  
 
   const formik = useFormik({
     initialValues: categoryInitValues(),
@@ -21,8 +35,7 @@ export const EditCategoryPage = () => {
     validateOnChange: false,
     onSubmit: (formValues) => {
       try {
-        // Aquí iría la lógica de actualización de categoría
-        console.log(formValues);
+        editCategory(id, formValues); // editar
         setAlertData({
           message: "Categoría actualizada correctamente.",
           type: "success",
@@ -37,18 +50,6 @@ export const EditCategoryPage = () => {
       }
     },
   });
-
-  useEffect(() => {
-    if (isLoading) {
-      getCategory(id);
-
-      // Asignar valores a formik
-      formik.setFieldValue("name", selectedCategory.name);
-      formik.setFieldValue("description", selectedCategory.description);
-
-      setIsLoading(false);
-    }
-  }, [isLoading, id, selectedCategory, getCategory, formik]);
 
   return (
     <div className="container mx-auto px-6">
@@ -82,7 +83,6 @@ export const EditCategoryPage = () => {
               placeholder="Nombre"
               value={formik.values.name}
               onChange={formik.handleChange}
-              required
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />
           </div>
@@ -100,7 +100,6 @@ export const EditCategoryPage = () => {
               placeholder="Descripción de la categoría"
               value={formik.values.description}
               onChange={formik.handleChange}
-              required
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             ></textarea>
           </div>

@@ -82,15 +82,6 @@ const [alertData, setAlertData] = useState({ message: "", type: "", show: false 
           Crear Nuevo Evento
         </h2>
 
-        {/* Mostrar el alert si está habilitado */}
-        {alertData.show && (
-          <CustomAlerts
-            message={alertData.message}
-            type={alertData.type}
-            onClose={() => setAlertData((prev) => ({ ...prev, show: false }))}
-          />
-        )}
-
         <form
           onSubmit={handleSubmit}
           className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
@@ -215,6 +206,14 @@ const [alertData, setAlertData] = useState({ message: "", type: "", show: false 
             </div>
           )}
         </form>
+        {/* Mostrar el alert si está habilitado */}
+        {alertData.show && (
+          <CustomAlerts
+            message={alertData.message}
+            type={alertData.type}
+            onClose={() => setAlertData((prev) => ({ ...prev, show: false }))}
+          />
+        )}
       </main>
     </div>
   );

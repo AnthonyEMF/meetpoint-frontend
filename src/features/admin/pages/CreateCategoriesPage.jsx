@@ -3,10 +3,12 @@ import { CustomAlerts } from "../../../shared/components";
 import { categoryInitValues, categoryValidationSchema } from "../forms/category.data";
 import { useCategoriesStore } from "../store/useCategoriesStore";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export const CreateCategoriesPage = () => {
     const createCategory = useCategoriesStore((state) => state.createCategory);
     const [alertData, setAlertData] = useState({ message: "", type: "", show: false });
+    const navigate = useNavigate();
   
     const formik = useFormik({
       initialValues: categoryInitValues(),
@@ -20,6 +22,7 @@ export const CreateCategoriesPage = () => {
             type: "success",
             show: true,
           });
+          navigate("/administration/categories-list");
         } catch (error) {
           setAlertData({
             message: "Hubo un error al crear la categoría.",
