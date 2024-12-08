@@ -8,7 +8,7 @@ export const CategoriesRowItem = ({category}) => {
         <td className="px-6 py-4 text-sm text-white">
           <Link
             className="bg-blue-500 px-4 py-2 rounded mr-2 hover:bg-blue-400" 
-            to={`administration/categories-list/edit/${category.id}`} // Mandar al EditCategoryPage
+            to={`/administration/categories-list/edit/${category.id}`} // Mandar al EditCategoryPage
           >
             Editar
           </Link>

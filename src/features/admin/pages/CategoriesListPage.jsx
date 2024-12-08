@@ -65,7 +65,7 @@ export const CategoriesListPage = () => {
                 </button>
                 <Link
                   className="bg-green-500 text-white px-4 py-2 rounded ml-2 hover:bg-green-400" 
-                  to={`administration/categories-list/new`} // Mandar al CreateCategoryPage
+                  to={`/administration/categories-list/new`} // Mandar al CreateCategoryPage
                 >
                   Nueva categoría
                 </Link>

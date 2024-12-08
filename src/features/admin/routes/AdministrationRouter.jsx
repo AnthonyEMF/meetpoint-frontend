@@ -1,7 +1,8 @@
 import { Navigate, Route, Routes } from "react-router-dom"
 import { Footer, Nav } from "../../client/components"
 import { DashboardPage } from "../pages/DashboardPage"
-import { CategoriesListPage, EventListPage, ReportsListPage, UsersListPage } from "../pages"
+import { CategoriesListPage, CreateCategoriesPage, EditUserPage, EventListPage, ReportsListPage, UsersListPage } from "../pages"
+import { EditCategoryPage } from "../pages/EditCategoryPage"
 
 export const AdministrationRouter = () => {
   return (
@@ -12,8 +13,11 @@ export const AdministrationRouter = () => {
           <Routes>
             <Route path='/dashboard' element={<DashboardPage />} />
             <Route path='/users-list' element={<UsersListPage />} />
+            <Route path='/user/edit/:id' element={<EditUserPage />} />
             <Route path='/events-list' element={<EventListPage />} />
             <Route path='/categories-list' element={<CategoriesListPage />} />
+            <Route path='/categories-list/edit/:id' element={<EditCategoryPage />} />
+            <Route path='/categories-list/new' element={<CreateCategoriesPage />} />
             <Route path='/reports-list' element={<ReportsListPage />} />
             <Route path='/*' element={<Navigate to={"/dashboard"} />} />
           </Routes>

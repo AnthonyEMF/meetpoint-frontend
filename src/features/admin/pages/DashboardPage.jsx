@@ -10,14 +10,15 @@ import { useUsers } from "../../client/hooks/useUsers";
 import { useEffect, useState } from "react";
 import { useCategories, useEvents } from "../../client/hooks";
 import { useReports } from "../../client/hooks/useReports";
+import { Pagination } from "../../../shared/components";
 
 export const DashboardPage = () => {
   const { users, loadUsers, isLoading } = useUsers();
   const { events, loadEvents } = useEvents();
   const { categories, loadCategories } = useCategories();
   const { reports, loadReports } = useReports();
-  const [currentPage] = useState(1);
-  const [searchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
   const [fetching, setFetching] = useState(true);
 
   useEffect(() => {
@@ -52,6 +53,33 @@ export const DashboardPage = () => {
   const handleReportsChange = async () => {
     await loadReports(searchTerm, currentPage);
   }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setFetching(true);
+};  
+
+  // Cambiar a una página especifica
+const handleCurrentPage = (index = 1) => {
+    setCurrentPage(index);
+    setFetching(true);
+};
+
+// Ir a página anterior
+const handlePreviousPage = () => {
+    if (category.data.hasPreviousPage) {
+      setCurrentPage((prevPage) => prevPage - 1);
+      setFetching(true);
+    }
+};
+
+  // Ir a página siguiente
+const handleNextPage = () => {
+    if (category.data.hasNextPage) {
+     setCurrentPage((prevPage) => prevPage + 1);
+     setFetching(true);
+    }
+};
 
   return (
     <div className="min-h-screen">
@@ -183,6 +211,21 @@ export const DashboardPage = () => {
             <div className="flex justify-center items-center">
             <span className="text-2xl mb-2">Reportes de usuarios</span>
             </div>
+            <div className="flex items-center">
+
+            <input
+                type="text"
+                placeholder="Buscar reporte..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full px-4 py-2 border rounded-lg rounded-r-none focus:outline-none focus:border-gray-500"
+                />
+            <button onSubmit={handleSubmit}
+                  type="submit"
+                  className="bg-gray-600 text-white px-4 py-2 rounded-r-md hover:bg-gray-500"
+                  > Buscar
+                </button>
+            </div>
           </h2>
           <ul className="space-y-2">
             {isLoading ? (
@@ -205,6 +248,20 @@ export const DashboardPage = () => {
               </li>
             )}
           </ul>
+
+          {/* Paginación */}
+      <div className="mt-6 mb-6">
+        <Pagination
+          totalPages={reports?.data?.totalPages}
+          hasNextPage={reports?.data?.hasNextPage}
+          hasPreviousPage={reports?.data?.hasPreviousPage}
+          currentPage={currentPage}
+          handleNextPage={handleNextPage}
+          handlePreviousPage={handlePreviousPage}
+          setCurrentPage={setCurrentPage}
+          handleCurrentPage={handleCurrentPage}
+        />
+      </div>
         </section>
       </div>
     </div>
