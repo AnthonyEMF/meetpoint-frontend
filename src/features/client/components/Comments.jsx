@@ -71,7 +71,7 @@ export const Comments = ({ event, handleCommentsChange }) => {
             <div className="flex justify-between items-start">
               <div className="flex flex-col gap-3">
                 <Link
-                  to={`/user/view/${comment.userId}`}
+                  to={comment.userId === loggedUserId ? "/user" : `/user/view/${comment.userId}`}
                   className="flex items-center gap-2"
                 >
                   <img

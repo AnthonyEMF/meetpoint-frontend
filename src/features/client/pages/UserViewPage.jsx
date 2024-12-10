@@ -100,18 +100,18 @@ export const UserViewPage = () => {
           {/* Restringir botones de eliminar y editar solo para administración */}
           <ProtectedComponent requiredRoles={[rolesListConstant.ADMIN]}>
             <Link to={`/administration/user/edit/${id}`}>
-              <button className="flex items-center justify-center bg-blue-500 text-white w-full my-1 py-2 px-10 rounded-lg hover:bg-blue-700">
+              <button className="flex items-center justify-center bg-blue-600 text-white w-full my-1 mb-4 py-2 px-10 rounded hover:bg-blue-500">
                 <RiEdit2Fill className="mr-2" size={18}/>
-                Editar
+                Editar Usuario
               </button>
             </Link>
             {loggedUserId != id && (
               <button
-                className="flex items-center justify-center bg-red-500 text-white w-full my-1 py-2 px-10 rounded-lg hover:bg-red-700"
+                className="flex items-center justify-center bg-red-600 text-white w-full my-1 py-2 px-10 rounded hover:bg-red-500"
                 onClick={handleDeleteUser}
                 >
                 <RiDeleteBin5Fill className="mr-2" size={18}/>
-                Eliminar
+                Eliminar Usuario
               </button>
             )}
           </ProtectedComponent>

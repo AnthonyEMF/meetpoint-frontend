@@ -115,7 +115,9 @@ export const EventPage = () => {
             {isAuthenticated && (
               <p className="mb-2 self-end">
                 Organizado por{" "}
-                <Link to={`/user/view/${event.data.organizerId}`}>
+                <Link
+                  to={event.data.organizerId === loggedUserId ? "/user" : `/user/view/${event.data.organizerId}`}
+                  >
                   <span className="font-bold">{event.data.organizerName}</span>
                 </Link>
               </p>
@@ -126,19 +128,19 @@ export const EventPage = () => {
               <div>
                 {new Date(event.data.date) > new Date() && (
                   <button
-                    className="flex items-center justify-center w-full my-2 mr-2 px-9 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700"
+                    className="flex items-center justify-center w-full my-2 mr-2 px-14 py-2 bg-blue-600 text-white rounded hover:bg-blue-500"
                     onClick={handleEditEvent}
                   >
                     <RiEdit2Fill className="mr-2" size={18} />
-                    Editar
+                    Editar Evento
                   </button>
                 )}
                 <button
-                  className="flex items-center justify-center w-full my-2 px-9 py-2 bg-red-500 text-white rounded-lg hover:bg-red-700"
+                  className="flex items-center justify-center w-full my-2 px-14 py-2 bg-red-600 text-white rounded hover:bg-red-500"
                   onClick={handleDeleteEvent}
                 >
                   <RiDeleteBin5Fill className="mr-2" size={18} />
-                  Eliminar
+                  Eliminar Evento
                 </button>
               </div>
             )}
@@ -149,19 +151,19 @@ export const EventPage = () => {
                 <div>
                   {new Date(event.data.date) > new Date() && (
                     <button
-                      className="flex items-center justify-center w-full my-2 mr-2 px-9 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700"
+                      className="flex items-center justify-center w-full my-2 mr-2 px-14 py-2 bg-blue-600 text-white rounded hover:bg-blue-500"
                       onClick={handleEditEvent}
                     >
                       <RiEdit2Fill className="mr-2" size={18} />
-                      Editar
+                      Editar Evento
                     </button>
                   )}
                   <button
-                    className="flex items-center justify-center w-full my-2 px-9 py-2 bg-red-500 text-white rounded-lg hover:bg-red-700"
+                    className="flex items-center justify-center w-full my-2 px-14 py-2 bg-red-600 text-white rounded hover:bg-red-500"
                     onClick={handleDeleteEvent}
                   >
                     <RiDeleteBin5Fill className="mr-2" size={18} />
-                    Eliminar
+                    Eliminar Evento
                   </button>
                 </div>
               )}

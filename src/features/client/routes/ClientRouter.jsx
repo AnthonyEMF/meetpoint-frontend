@@ -1,6 +1,6 @@
 import { Footer, Nav } from '../components';
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { HomePage, MainPage, UserPage, EventPage, CreateEventPage, EditEventPage, UserViewPage } from '../pages/';
+import { HomePage, MainPage, UserPage, EventPage, CreateEventPage, EditEventPage, UserViewPage, EditUserPage } from '../pages/';
 
 export const ClientRouter = () => {
   return (
@@ -13,6 +13,7 @@ export const ClientRouter = () => {
               <Route path='/main' element={<MainPage/>}/>
               <Route path='/user' element={<UserPage/>}/>
               <Route path='/user/view/:id' element={<UserViewPage/>}/>
+              <Route path='/user/edit/:id' element={<EditUserPage />}/>
               <Route path='/main/event/:id' element={<EventPage/>}/>
               <Route path='/main/event/create' element={<CreateEventPage/>}/>
               <Route path='/main/event/edit/:id' element={<EditEventPage/>}/>

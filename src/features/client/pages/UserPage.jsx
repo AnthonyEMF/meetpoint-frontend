@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useUsers } from "../hooks/useUsers";
 import { formatDate } from "../../../shared/utils";
@@ -7,11 +7,15 @@ import { StarRating } from "../../../shared/components";
 import { IoStatsChart } from "react-icons/io5";
 import { FiPlusCircle } from "react-icons/fi";
 import { BiLogOutCircle } from "react-icons/bi";
+import { RiDeleteBin5Fill, RiEdit2Fill } from "react-icons/ri";
+import { useUsersStore } from "../../admin/store/useUsersStore";
 
 export const UserPage = () => {
   const logout = useAuthStore((state) => state.logout);
   const [fetching, setFetching] = useState(true);
   const { user, loadUserById } = useUsers();
+  const { deleteUser } = useUsersStore();
+  const navigate = useNavigate();
 
   // Obtener id del usuario desde el token
   const getUserId = useAuthStore((state) => state.getUserId);
@@ -27,6 +31,18 @@ export const UserPage = () => {
   // Cerrar Sesión
   const handleLogout = () => {
     logout();
+  };
+
+  // Eliminar cuenta
+  const handleDeleteUser = async () => {
+    try {
+      await deleteUser(loggedUserId);
+      alert("Su cuenta ha sido eliminada correctamente.");
+      logout();
+      navigate("/home");
+    } catch (error) {
+      console.error("Error al eliminar la cuenta:", error);
+    }
   };
 
   return (
@@ -54,9 +70,23 @@ export const UserPage = () => {
             </div>
           </div>
         </div>
-        <div className="ml-auto">
+        <div className="ml-auto grid grid-cols-2 gap-4">
+          <Link to={`/user/edit/${loggedUserId}`}>
+            <button className="flex items-center justify-center px-10 bg-blue-600 text-white w-full py-2 rounded hover:bg-blue-500">
+              <RiEdit2Fill size={17} className="mr-1" />
+              Editar Cuenta
+            </button>
+          </Link>
+          <button
+            className="flex items-center justify-center bg-red-600 text-white w-full py-2 px-10 rounded hover:bg-red-500"
+            onClick={handleDeleteUser}
+          >
+            <RiDeleteBin5Fill className="mr-2" size={18}/>
+            Eliminar Cuenta
+          </button>
+
           <Link to="/main/event/create">
-            <button className="flex items-center justify-center px-10 bg-green-600 text-white w-full py-2 rounded hover:bg-green-500 mb-4">
+            <button className="flex items-center justify-center px-10 bg-green-600 text-white w-full py-2 rounded hover:bg-green-500">
               <FiPlusCircle size={17} className="mr-1" />
               Nuevo Evento
             </button>
@@ -64,7 +94,7 @@ export const UserPage = () => {
           <Link to="/home">
             <button
               onClick={handleLogout}
-              className="flex items-center justify-center px-10 bg-red-600 text-white w-full py-2 rounded hover:bg-red-500">
+              className="flex items-center justify-center px-10 bg-gray-600 text-white w-full py-2 rounded hover:bg-gray-500">
               <BiLogOutCircle size={20} className="mr-1" />
               Cerrar Sesión
             </button>

@@ -66,7 +66,7 @@ export const Sidebar = ({ onCategorySelect }) => {
             <Link to="/home">
               <button
                 onClick={handleLogout}
-                className="flex items-center justify-center bg-red-600 text-white w-full py-2 rounded hover:bg-red-500">
+                className="flex items-center justify-center bg-gray-600 text-white w-full py-2 rounded hover:bg-gray-500">
                 <BiLogOutCircle size={20} className="mr-1" />
                 Cerrar Sesión
               </button>

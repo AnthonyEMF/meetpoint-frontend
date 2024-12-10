@@ -5,3 +5,4 @@ export * from './EventPage';
 export * from './CreateEventPage';
 export * from './EditEventPage';
 export * from './UserViewPage';
+export * from './EditUserPage';

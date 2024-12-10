@@ -1,8 +1,13 @@
 import { IoStatsChart } from "react-icons/io5";
 import { TbMessageReport } from "react-icons/tb";
 import { Link } from "react-router-dom";
+import { useAuthStore } from "../../security/store";
 
 export const UserRowItem = ({ user }) => {
+  // Obtener id del usuario en sesión
+  const getUserId = useAuthStore((state) => state.getUserId);
+  const loggedUserId = getUserId();
+
   return (
     <tr key={user.id}>
       <td className="px-6 py-4 text-sm font-medium text-gray-900">
@@ -38,7 +43,7 @@ export const UserRowItem = ({ user }) => {
       </td>
       <td className="px-6 py-4 text-sm font-medium">
         <Link
-          to={`/user/view/${user.id}`}
+          to={user.id === loggedUserId ? "/user" : `/user/view/${user.id}`}
           className="text-blue-600 hover:text-blue-800"
         >
           Ver detalles

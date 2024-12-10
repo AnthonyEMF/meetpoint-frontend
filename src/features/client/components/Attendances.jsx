@@ -101,6 +101,7 @@ export const Attendances = ({ event, handleAttendancesChange }) => {
 
     await createRating(ratingData);
     setIsRatingSubmitted(true);
+    alert("¡Gracias por tu calificación!");
     navigate(`/user/view/${event.data.organizerId}`);
   };
 
@@ -122,7 +123,10 @@ export const Attendances = ({ event, handleAttendancesChange }) => {
                   key={attendance.id}
                   className="bg-gray-200 p-4 rounded-lg flex justify-between items-center"
                 >
-                  <Link to={`/user/view/${attendance.userId}`} className="flex items-center">
+                  <Link 
+                    to={attendance.userId === loggedUserId ? "/user" : `/user/view/${attendance.userId}`}
+                    className="flex items-center"
+                  >
                     <img
                       src="https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg"
                       alt="Perfil"
