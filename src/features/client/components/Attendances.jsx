@@ -6,6 +6,7 @@ import { PiWarningCircleBold } from "react-icons/pi";
 import { useRatings } from "../hooks/useRatings";
 import { useUsers } from "../hooks/useUsers";
 import { Loading } from "../../../shared/components";
+import StarRatingInput from "../../../shared/components/StarRatingInput";
 
 export const Attendances = ({ event, handleAttendancesChange }) => {
   const { createAttendance, editAttendance, deleteAttendance, isSubmitting, error } = useAttendances();
@@ -91,7 +92,7 @@ export const Attendances = ({ event, handleAttendancesChange }) => {
 
   // Enviar la calificación
   const handleSubmitRating = async () => {
-    if (rating < 0 || rating > 5) return alert("La calificación debe estar entre 0 y 5");
+    if (rating < 1 || rating > 5) return alert("Ingresa una calificación.");
 
     const ratingData = {
       eventId: event.data.id,
@@ -223,22 +224,7 @@ export const Attendances = ({ event, handleAttendancesChange }) => {
                 ¿Qué calificación le das a este evento?
               </h2>
               <div className="flex items-center gap-2 justify-center">
-                <input
-                  type="number"
-                  min="0"
-                  max="5"
-                  step="0.1"
-                  placeholder="0 - 5"
-                  className="p-2 border border-gray-300 rounded"
-                  onChange={handleRatingChange}
-                />
-                <button
-                  className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700"
-                  onClick={handleSubmitRating}
-                  disabled={isSubmitting}
-                >
-                  Enviar
-                </button>
+                <StarRatingInput handleSubmitRating={handleSubmitRating} handleRatingChange={handleRatingChange} />
               </div>
             </>
           )}

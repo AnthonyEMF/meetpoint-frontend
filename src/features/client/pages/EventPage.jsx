@@ -17,7 +17,7 @@ export const EventPage = () => {
   const navigate = useNavigate();
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
-  // Obtener id del usuario desde el token
+  // Obtener id del usuario en sesión
   const getUserId = useAuthStore((state) => state.getUserId);
   const loggedUserId = getUserId();
 
@@ -93,7 +93,7 @@ export const EventPage = () => {
               <span className="font-bold">Fecha del Evento:</span>{" "}
               {formatDate(event.data.date)}
             </p>
-            {/* Mostrar mensaje de evento finalizado */}
+            {/* Mostrar estado del evento */}
             {new Date(event.data.date) < new Date() ? (
               <p className="mt-2 font-bold text-lg text-red-600">
                 <span className="flex">
@@ -116,8 +116,12 @@ export const EventPage = () => {
               <p className="mb-2 self-end">
                 Organizado por{" "}
                 <Link
-                  to={event.data.organizerId === loggedUserId ? "/user" : `/user/view/${event.data.organizerId}`}
-                  >
+                  to={
+                    event.data.organizerId === loggedUserId
+                      ? "/user"
+                      : `/user/view/${event.data.organizerId}`
+                  }
+                >
                   <span className="font-bold">{event.data.organizerName}</span>
                 </Link>
               </p>
@@ -126,15 +130,13 @@ export const EventPage = () => {
             {/* Mostrar botones para el organizador */}
             {isOrganizer && (
               <div>
-                {new Date(event.data.date) > new Date() && (
-                  <button
-                    className="flex items-center justify-center w-full my-2 mr-2 px-14 py-2 bg-blue-600 text-white rounded hover:bg-blue-500"
-                    onClick={handleEditEvent}
-                  >
-                    <RiEdit2Fill className="mr-2" size={18} />
-                    Editar Evento
-                  </button>
-                )}
+                <button
+                  className="flex items-center justify-center w-full my-2 mr-2 px-14 py-2 bg-blue-600 text-white rounded hover:bg-blue-500"
+                  onClick={handleEditEvent}
+                >
+                  <RiEdit2Fill className="mr-2" size={18} />
+                  Editar Evento
+                </button>
                 <button
                   className="flex items-center justify-center w-full my-2 px-14 py-2 bg-red-600 text-white rounded hover:bg-red-500"
                   onClick={handleDeleteEvent}
@@ -149,15 +151,13 @@ export const EventPage = () => {
             <ProtectedComponent requiredRoles={[rolesListConstant.ADMIN]}>
               {!isOrganizer && (
                 <div>
-                  {new Date(event.data.date) > new Date() && (
-                    <button
-                      className="flex items-center justify-center w-full my-2 mr-2 px-14 py-2 bg-blue-600 text-white rounded hover:bg-blue-500"
-                      onClick={handleEditEvent}
-                    >
-                      <RiEdit2Fill className="mr-2" size={18} />
-                      Editar Evento
-                    </button>
-                  )}
+                  <button
+                    className="flex items-center justify-center w-full my-2 mr-2 px-14 py-2 bg-blue-600 text-white rounded hover:bg-blue-500"
+                    onClick={handleEditEvent}
+                  >
+                    <RiEdit2Fill className="mr-2" size={18} />
+                    Editar Evento
+                  </button>
                   <button
                     className="flex items-center justify-center w-full my-2 px-14 py-2 bg-red-600 text-white rounded hover:bg-red-500"
                     onClick={handleDeleteEvent}
@@ -177,7 +177,10 @@ export const EventPage = () => {
       )}
 
       {/* Lista de Asistentes */}
-      <Attendances event={event} handleAttendancesChange={handleAttendancesChange} />
+      <Attendances
+        event={event}
+        handleAttendancesChange={handleAttendancesChange}
+      />
 
       {/* Sección de Comentarios */}
       <Comments event={event} handleCommentsChange={handleCommentsChange} />

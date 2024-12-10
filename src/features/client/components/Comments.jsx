@@ -100,6 +100,7 @@ export const Comments = ({ event, handleCommentsChange }) => {
                 </p>
               </div>
 
+              {/* Editar comentario */}
               {comment.userId === loggedUserId && (
                 <div className="flex space-x-2">
                   {editingCommentId === comment.id ? (
@@ -145,6 +146,7 @@ export const Comments = ({ event, handleCommentsChange }) => {
                   )}
                 </div>
               )}
+              
             </div>
             {comment.parentId === null && (
               <button

@@ -1,6 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { formatDate } from "../../../shared/utils";
 import { useAuthStore } from "../../security/store";
+import { FaRegCalendarXmark } from "react-icons/fa6";
+import { FaRegCalendarCheck } from "react-icons/fa";
 
 // Imágenes por defecto para cada Categoría
 const categoryImages = {
@@ -27,7 +29,11 @@ export const EventListItem = ({ event }) => {
   };
 
   return (
-    <div key={event.id} onClick={handleCardClick} className="bg-white shadow-lg rounded-lg flex transition-transform transform duration-200 hover:scale-105 hover:cursor-pointer">
+    <div
+      key={event.id}
+      onClick={handleCardClick}
+      className="bg-white shadow-lg rounded-lg flex transition-transform transform duration-200 hover:scale-105 hover:cursor-pointer"
+    >
       <div className="flex-grow p-6">
         <h3 className="text-xl font-bold mb-2">{event.title}</h3>
         <p className="text-gray-600 mb-1">{formatDate(event.date)}</p>
@@ -39,9 +45,28 @@ export const EventListItem = ({ event }) => {
         <p className="text-gray-600">{event.categoryName}</p>
 
         {isAuthenticated && ( // Mostrar si esta autenticado
-          <p className="mt-4 inline-block text-blue-800 text-sm">Organizado por <span className="font-bold">{event.organizerName}</span></p>
+          <p className="mt-4 inline-block text-blue-800 text-sm">
+            Organizado por{" "}
+            <span className="font-bold">{event.organizerName}</span>
+          </p>
         )}
 
+        {/* Mostrar estado del evento */}
+        {new Date(event.date) < new Date() ? (
+          <p className="mt-2 font-bold text-base text-red-600">
+            <span className="flex">
+              <FaRegCalendarXmark size={17} className="mr-1 mt-1" />
+              El evento ya ha finalizado
+            </span>
+          </p>
+        ) : (
+          <p className="mt-2 font-bold text-base text-green-600">
+            <span className="flex">
+              <FaRegCalendarCheck size={17} className="mr-1 mt-1" />
+              El evento sigue en vigencia
+            </span>
+          </p>
+        )}
       </div>
       <div className="w-20 h-full">
         <img
