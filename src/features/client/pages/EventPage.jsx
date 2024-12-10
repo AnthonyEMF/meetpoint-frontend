@@ -8,6 +8,7 @@ import { CustomAlerts, ProtectedComponent } from "../../../shared/components";
 import { FaRegCalendarXmark } from "react-icons/fa6";
 import { FaRegCalendarCheck } from "react-icons/fa";
 import { rolesListConstant } from "../../../shared/constants";
+import { RiDeleteBin5Fill, RiEdit2Fill } from "react-icons/ri";
 
 export const EventPage = () => {
   const { id } = useParams();
@@ -60,11 +61,10 @@ export const EventPage = () => {
 
   const handleCommentsChange = async () => {
     await loadEventById(id);
-  }
+  };
 
   return (
     <div className="container mx-auto p-6">
-      
       {showAlert && (
         <CustomAlerts
           message="¿Está seguro de que desea eliminar este evento?"
@@ -79,96 +79,109 @@ export const EventPage = () => {
         <EventPageSkeleton />
       ) : (
         <div className="bg-white shadow-lg rounded-lg p-6 mb-6 flex">
-        {/* Contenedor Izquierdo */}
-        <div className="w-full md:w-70">
-          <h1 className="text-3xl font-bold mb-2">{event.data.title}</h1>
-          <p className="text-xl mb-4">{event.data.description}</p>
-          {isAuthenticated && (
-            <p className="mb-2">
-              <span className="font-bold">Ubicación:</span> {event.data.ubication}
+          {/* Contenedor Izquierdo */}
+          <div className="w-full md:w-70">
+            <h1 className="text-3xl font-bold mb-2">{event.data.title}</h1>
+            <p className="text-xl mb-4">{event.data.description}</p>
+            {isAuthenticated && (
+              <p className="mb-2">
+                <span className="font-bold">Ubicación:</span>{" "}
+                {event.data.ubication}
+              </p>
+            )}
+            <p>
+              <span className="font-bold">Fecha del Evento:</span>{" "}
+              {formatDate(event.data.date)}
             </p>
-          )}
-          <p>
-            <span className="font-bold">Fecha del Evento:</span>{" "}
-            {formatDate(event.data.date)}
-          </p>
-          {/* Mostrar mensaje de evento finalizado */}
-          {new Date(event.data.date) < new Date() ? ( 
-            <p className="mt-2 font-bold text-lg text-red-600">
-              <span className="flex"><FaRegCalendarXmark size={20} className="mr-1 mt-1" />El evento ya ha finalizado</span>
-            </p>
-          ) : (
-            <p className="mt-2 font-bold text-lg text-green-600">
-              <span className="flex"><FaRegCalendarCheck size={20} className="mr-1 mt-1" />El evento sigue en vigencia</span>
-            </p>
-          )}
-        </div>
-        {/* Contenedor Derecho */}
-        <div className="w-full md:w-30 md:pl-4 flex flex-col items-end">
-          {isAuthenticated && (
-            <p className="mb-2 self-end">
-              Organizado por{" "}
-              <Link to={`/user/view/${event.data.organizerId}`}>
-                <span className="font-bold">{event.data.organizerName}</span>
-              </Link>
-            </p>
-          )}
+            {/* Mostrar mensaje de evento finalizado */}
+            {new Date(event.data.date) < new Date() ? (
+              <p className="mt-2 font-bold text-lg text-red-600">
+                <span className="flex">
+                  <FaRegCalendarXmark size={20} className="mr-1 mt-1" />
+                  El evento ya ha finalizado
+                </span>
+              </p>
+            ) : (
+              <p className="mt-2 font-bold text-lg text-green-600">
+                <span className="flex">
+                  <FaRegCalendarCheck size={20} className="mr-1 mt-1" />
+                  El evento sigue en vigencia
+                </span>
+              </p>
+            )}
+          </div>
+          {/* Contenedor Derecho */}
+          <div className="w-full md:w-30 md:pl-4 flex flex-col items-end">
+            {isAuthenticated && (
+              <p className="mb-2 self-end">
+                Organizado por{" "}
+                <Link to={`/user/view/${event.data.organizerId}`}>
+                  <span className="font-bold">{event.data.organizerName}</span>
+                </Link>
+              </p>
+            )}
 
-          {/* Mostrar botones para el organizador */}
-          {isOrganizer && ( 
-            <div>
-              {new Date(event.data.date) > new Date() && (
-                <button
-                  className="my-2 mr-2 px-10 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700"
-                  onClick={handleEditEvent}
-                >
-                  Editar
-                </button>
-              )}
-              <button
-                className="my-2 px-8 py-2 bg-red-500 text-white rounded-lg hover:bg-red-700"
-                onClick={handleDeleteEvent}
-              >
-                Eliminar
-              </button>
-            </div>
-          )}
-
-          {/* Mostrar botones para el administrador */}
-          <ProtectedComponent requiredRoles={[rolesListConstant.ADMIN]}>
-            {!isOrganizer && ( 
+            {/* Mostrar botones para el organizador */}
+            {isOrganizer && (
               <div>
                 {new Date(event.data.date) > new Date() && (
                   <button
-                    className="my-2 mr-2 px-10 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700"
+                    className="flex items-center justify-center w-full my-2 mr-2 px-9 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700"
                     onClick={handleEditEvent}
                   >
+                    <RiEdit2Fill className="mr-2" size={18} />
                     Editar
                   </button>
                 )}
                 <button
-                  className="my-2 px-8 py-2 bg-red-500 text-white rounded-lg hover:bg-red-700"
+                  className="flex items-center justify-center w-full my-2 px-9 py-2 bg-red-500 text-white rounded-lg hover:bg-red-700"
                   onClick={handleDeleteEvent}
                 >
+                  <RiDeleteBin5Fill className="mr-2" size={18} />
                   Eliminar
                 </button>
               </div>
             )}
-          </ProtectedComponent>
-          
-          <div className="text-white bg-orange-500 rounded-3xl px-10 py-2 mt-auto">
-            {event.data.categoryName}
+
+            {/* Mostrar botones para el administrador */}
+            <ProtectedComponent requiredRoles={[rolesListConstant.ADMIN]}>
+              {!isOrganizer && (
+                <div>
+                  {new Date(event.data.date) > new Date() && (
+                    <button
+                      className="flex items-center justify-center w-full my-2 mr-2 px-9 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700"
+                      onClick={handleEditEvent}
+                    >
+                      <RiEdit2Fill className="mr-2" size={18} />
+                      Editar
+                    </button>
+                  )}
+                  <button
+                    className="flex items-center justify-center w-full my-2 px-9 py-2 bg-red-500 text-white rounded-lg hover:bg-red-700"
+                    onClick={handleDeleteEvent}
+                  >
+                    <RiDeleteBin5Fill className="mr-2" size={18} />
+                    Eliminar
+                  </button>
+                </div>
+              )}
+            </ProtectedComponent>
+
+            <div className="text-white bg-orange-500 rounded-3xl px-10 py-2 mt-auto">
+              {event.data.categoryName}
+            </div>
           </div>
         </div>
-      </div>
       )}
 
       {/* Lista de Asistentes */}
-      <Attendances event={event} handleAttendancesChange={handleAttendancesChange} />
+      <Attendances
+        event={event}
+        handleAttendancesChange={handleAttendancesChange}
+      />
 
       {/* Sección de Comentarios */}
       <Comments event={event} handleCommentsChange={handleCommentsChange} />
-
     </div>
   );
 };

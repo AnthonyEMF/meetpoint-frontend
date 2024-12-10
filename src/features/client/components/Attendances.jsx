@@ -121,7 +121,12 @@ export const Attendances = ({ event, handleAttendancesChange }) => {
                   key={attendance.id}
                   className="bg-gray-200 p-4 rounded-lg flex justify-between items-center"
                 >
-                  <Link to={`/user/view/${attendance.userId}`}>
+                  <Link to={`/user/view/${attendance.userId}`} className="flex items-center">
+                    <img
+                      src="https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg"
+                      alt="Perfil"
+                      className="w-8 h-8 mt-3 mr-2 rounded-full mx-auto mb-3"
+                    />
                     <span>{attendance.userName}</span>
                   </Link>
                   <span

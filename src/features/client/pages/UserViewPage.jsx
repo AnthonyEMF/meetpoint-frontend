@@ -8,6 +8,7 @@ import { rolesListConstant } from "../../../shared/constants";
 import { IoStatsChart } from "react-icons/io5";
 import { useReports } from "../hooks/useReports";
 import { useUsersStore } from "../../admin/store/useUsersStore";
+import { RiDeleteBin5Fill, RiEdit2Fill } from "react-icons/ri";
 
 export const UserViewPage = () => {
   const [fetching, setFetching] = useState(true);
@@ -99,15 +100,17 @@ export const UserViewPage = () => {
           {/* Restringir botones de eliminar y editar solo para administración */}
           <ProtectedComponent requiredRoles={[rolesListConstant.ADMIN]}>
             <Link to={`/administration/user/edit/${id}`}>
-              <button className="bg-blue-500 text-white w-full my-1 py-2 px-4 rounded hover:bg-blue-400">
+              <button className="flex items-center justify-center bg-blue-500 text-white w-full my-1 py-2 px-10 rounded-lg hover:bg-blue-700">
+                <RiEdit2Fill className="mr-2" size={18}/>
                 Editar
               </button>
             </Link>
             {loggedUserId != id && (
               <button
-                className="bg-red-600 text-white w-full my-1 py-2 px-4 rounded hover:bg-red-500"
+                className="flex items-center justify-center bg-red-500 text-white w-full my-1 py-2 px-10 rounded-lg hover:bg-red-700"
                 onClick={handleDeleteUser}
                 >
+                <RiDeleteBin5Fill className="mr-2" size={18}/>
                 Eliminar
               </button>
             )}
