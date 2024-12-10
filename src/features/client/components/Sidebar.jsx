@@ -5,6 +5,7 @@ import { useUsers } from "../hooks/useUsers";
 import { useAuthStore } from "../../security/store/useAuthStore";
 import { BiLogOutCircle } from "react-icons/bi";
 import { FiPlusCircle } from "react-icons/fi";
+import { FaPeoplePulling } from "react-icons/fa6";
 
 export const Sidebar = ({ onCategorySelect }) => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
@@ -78,7 +79,7 @@ export const Sidebar = ({ onCategorySelect }) => {
       )}
 
       {/* Sección de Categorías */}
-      <div className="bg-white shadow-lg rounded-md p-6">
+      <div className="bg-white shadow-lg rounded-md p-6 mb-6">
         <h3 className="text-xl font-bold mb-4">Categorías</h3>
         <ul className="space-y-2">
           {isLoading ? (
@@ -97,6 +98,26 @@ export const Sidebar = ({ onCategorySelect }) => {
           )}
         </ul>
       </div>
+
+      {/* Crear una cuenta */}
+      {!isAuthenticated && (
+      <div className="bg-white shadow-lg rounded-md p-6">
+        <h3 className="text-xl text-center font-bold mb-4">¡Únete a nosotros!</h3>
+
+        <div className="flex flex-col items-center justify-center">
+          <FaPeoplePulling size={50} className="text-gray-800" />
+          <p className="mb-4 mt-2 text-center px-4">Regístrate para poder empezar a crear nuevos eventos y compartir con nuestra comunidad</p>
+        </div>
+
+        <Link
+          to="/security/register"
+          className="flex justify-center p-2 bg-blue-600 rounded text-white hover:bg-blue-500"
+        >
+          Crear una cuenta
+        </Link>
+      </div>
+      )}
+
     </aside>
   );
 };

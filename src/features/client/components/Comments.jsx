@@ -4,6 +4,8 @@ import { RiDeleteBin5Fill, RiEdit2Fill, RiReplyFill } from "react-icons/ri";
 import { useAuthStore } from "../../security/store";
 import { Link } from "react-router-dom";
 import { PiWarningCircleBold } from "react-icons/pi";
+import { ProtectedComponent } from "../../../shared/components";
+import { rolesListConstant } from "../../../shared/constants";
 
 export const Comments = ({ event, handleCommentsChange }) => {
   const { createComment, editComment, deleteComment, isSubmitting, error } = useComments();
@@ -100,7 +102,7 @@ export const Comments = ({ event, handleCommentsChange }) => {
                 </p>
               </div>
 
-              {/* Editar comentario */}
+              {/* Editar comentario para el dueño del comentario */}
               {comment.userId === loggedUserId && (
                 <div className="flex space-x-2">
                   {editingCommentId === comment.id ? (
@@ -146,6 +148,55 @@ export const Comments = ({ event, handleCommentsChange }) => {
                   )}
                 </div>
               )}
+
+              {/* Editar comentario para administradores */}
+              <ProtectedComponent requiredRoles={[rolesListConstant.ADMIN]}>
+              {comment.userId != loggedUserId && (
+                <div className="flex space-x-2">
+                  {editingCommentId === comment.id ? (
+                    <div className="flex flex-col my-8 ml-4">
+                      <button
+                        className="mt-2 px-5 py-2 bg-green-500 text-white rounded-lg hover:bg-green-700"
+                        onClick={() => handleEditComment(comment.id)}
+                        disabled={isSubmitting}
+                      >
+                        Guardar
+                      </button>
+                      <button
+                        className="mt-2 px-5 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-700"
+                        onClick={() => {
+                          setEditingCommentId(null);
+                          setEditedContent("");
+                        }}
+                        disabled={isSubmitting}
+                      >
+                        Cancelar
+                      </button>
+                    </div>
+                  ) : (
+                    <>
+                      <button
+                        className="p-2 text-xl bg-green-500 text-white rounded-full hover:bg-green-700"
+                        onClick={() => {
+                          setEditingCommentId(comment.id);
+                          setEditedContent(comment.content);
+                        }}
+                        disabled={isSubmitting}
+                      >
+                        <RiEdit2Fill />
+                      </button>
+                      <button
+                        className="p-2 text-xl bg-red-500 text-white rounded-full hover:bg-red-700"
+                        onClick={() => handleDeleteComment(comment.id)}
+                        disabled={isSubmitting}
+                      >
+                        <RiDeleteBin5Fill />
+                      </button>
+                    </>
+                  )}
+                </div>
+              )}
+              </ProtectedComponent>
               
             </div>
             {comment.parentId === null && (

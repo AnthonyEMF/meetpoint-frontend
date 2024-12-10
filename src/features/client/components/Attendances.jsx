@@ -5,8 +5,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { PiWarningCircleBold } from "react-icons/pi";
 import { useRatings } from "../hooks/useRatings";
 import { useUsers } from "../hooks/useUsers";
-import { Loading } from "../../../shared/components";
+import { Loading, ProtectedComponent } from "../../../shared/components";
 import StarRatingInput from "../../../shared/components/StarRatingInput";
+import { FaUserGear, FaUserXmark } from "react-icons/fa6";
+import { rolesListConstant } from "../../../shared/constants";
 
 export const Attendances = ({ event, handleAttendancesChange }) => {
   const { createAttendance, editAttendance, deleteAttendance, isSubmitting, error } = useAttendances();
@@ -85,6 +87,14 @@ export const Attendances = ({ event, handleAttendancesChange }) => {
     }
   };
 
+  // Eliminar asistencia de la lista
+  const handleDeleteAttendanceFromList = async (attendanceId) => {
+    const result = await deleteAttendance(attendanceId);
+    if (result) {
+      if (handleAttendancesChange) handleAttendancesChange();
+    }
+  };
+
   // Manejar cambio en la calificación
   const handleRatingChange = (e) => {
     setRating(e.target.value);
@@ -120,32 +130,66 @@ export const Attendances = ({ event, handleAttendancesChange }) => {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             {event.data.attendances && event.data.attendances.length > 0 ? (
               event.data.attendances.map((attendance) => (
-                <div
-                  key={attendance.id}
-                  className="bg-gray-200 p-4 rounded-lg flex justify-between items-center"
-                >
-                  <Link 
-                    to={attendance.userId === loggedUserId ? "/user" : `/user/view/${attendance.userId}`}
-                    className="flex items-center"
-                  >
-                    <img
-                      src="https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg"
-                      alt="Perfil"
-                      className="w-8 h-8 mt-3 mr-2 rounded-full mx-auto mb-3"
-                    />
-                    <span>{attendance.userName}</span>
-                  </Link>
-                  <span
-                    className={`px-4 py-2 rounded-full text-white ${
-                      attendance.state === "CONFIRMADO"
-                        ? "bg-green-500"
-                        : attendance.state === "PENDIENTE"
-                        ? "bg-yellow-500"
-                        : "bg-red-500"
-                    }`}
-                  >
-                    {attendance.state}
-                  </span>
+                <div key={attendance.id}>
+                  <div className="bg-gray-200 p-4 rounded-lg flex justify-between items-center">
+                    {/* Info del asistente */}
+                    <Link 
+                      to={attendance.userId === loggedUserId ? "/user" : `/user/view/${attendance.userId}`}
+                      className="flex items-center"
+                    >
+                      <img
+                        src="https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg"
+                        alt="Perfil"
+                        className="w-8 h-8 mt-3 mr-2 rounded-full mx-auto mb-3"
+                      />
+                      <span>{attendance.userName}</span>
+                    </Link>
+                    {/* Estado de la asistencia */}
+                    <span
+                      className={`px-4 py-2 rounded-full text-white ${
+                        attendance.state === "CONFIRMADO"
+                          ? "bg-green-500"
+                          : attendance.state === "PENDIENTE"
+                          ? "bg-yellow-500"
+                          : "bg-red-500"
+                      }`}
+                    >
+                      {attendance.state}
+                    </span>
+                  </div>
+
+                  {/* Botón para expulsar asistentes (ORGANIZADOR) */}
+                  {attendance.userId != loggedUserId && event.data.organizerId === loggedUserId ?  ( 
+                    <button 
+                      className="text-red-500 font-semibold hover:underline flex items-center"
+                      onClick={() => handleDeleteAttendanceFromList(attendance.id)}
+                      disabled={isSubmitting}
+                    >
+                      <FaUserXmark className="mt-1 mx-1" />Expulsar asistente 
+                    </button>
+                  ) : (
+                    <div>
+                      {loggedUserId === attendance.userId && (
+                      <span className="text-green-500 font-semibold flex items-center">
+                        <FaUserGear className="mt-1 mx-1" />Tu asistencia
+                      </span>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Botón para expulsar asistentes (ADMIN) */}
+                  <ProtectedComponent requiredRoles={[rolesListConstant.ADMIN]}>
+                  {attendance.userId != loggedUserId && event.data.organizerId != loggedUserId &&  ( 
+                    <button 
+                      className="text-red-500 font-semibold hover:underline flex items-center"
+                      onClick={() => handleDeleteAttendanceFromList(attendance.id)}
+                      disabled={isSubmitting}
+                    >
+                      <FaUserXmark className="mt-1 mx-1" />Expulsar asistente 
+                    </button>
+                  )}
+                  </ProtectedComponent>
+
                 </div>
               ))
             ) : (
