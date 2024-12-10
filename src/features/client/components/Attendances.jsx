@@ -1,37 +1,44 @@
 import { useEffect, useState } from "react";
 import { useAttendances } from "../hooks/useAttendances";
 import { useAuthStore } from "../../security/store";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { PiWarningCircleBold } from "react-icons/pi";
 import { useRatings } from "../hooks/useRatings";
 import { useUsers } from "../hooks/useUsers";
+import { Loading } from "../../../shared/components";
 
 export const Attendances = ({ event, handleAttendancesChange }) => {
-  // asistencia
   const { createAttendance, editAttendance, deleteAttendance, isSubmitting, error } = useAttendances();
   const [currentAttendance, setCurrentAttendance] = useState(null);
-  // rating
-  const [rating, setRating] = useState(null);
-  const [setIsRatingSubmitted] = useState(false);
   const { createRating } = useRatings();
-  // user
+  const [rating, setRating] = useState(null);
+  const [isRatingSubmitted, setIsRatingSubmitted] = useState(false);
   const { user, loadUserById } = useUsers();
   const [fetching, setFetching] = useState(true);
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const getUserId = useAuthStore((state) => state.getUserId);
   const loggedUserId = getUserId();
+  const navigate = useNavigate();
+
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     // Cargar el usuario para verificar los ratings
-    loadUserById(loggedUserId)
-      .then(() => setFetching(false))
-      .catch(() => setFetching(false));
+    if (isLoading || isRatingSubmitted) {
+      loadUserById(loggedUserId)
+        .then(() => {
+          setFetching(false);
+          setIsRatingSubmitted(false);
+        })
+        .catch(() => setFetching(false));
+      setIsLoading(false);
+    }
 
     const userAttendance = event.data.attendances.find(
       (attendance) => attendance.userId === loggedUserId
     );
     setCurrentAttendance(userAttendance || null);
-  }, [event.data.attendances, loggedUserId, loadUserById]);
+  }, [event.data.attendances, loggedUserId, loadUserById, isLoading, isRatingSubmitted]);
 
   // Verificar si el usuario ya ha calificado el evento
   const hasRated = user?.data?.madeRatings?.some(
@@ -92,11 +99,12 @@ export const Attendances = ({ event, handleAttendancesChange }) => {
       score: parseFloat(rating),
     };
 
-    const result = await createRating(ratingData);
-    if (result) {
-      setIsRatingSubmitted(true);
-    }
+    await createRating(ratingData);
+    setIsRatingSubmitted(true);
+    navigate(`/user/view/${event.data.organizerId}`);
   };
+
+  if (isLoading) return <Loading />;
 
   return (
     <div className="bg-white shadow-lg rounded-lg p-6 mb-6">
@@ -201,7 +209,7 @@ export const Attendances = ({ event, handleAttendancesChange }) => {
       {/* Mostrar opción para calificar con estrellas */}
       {currentAttendance && event.data.organizerId !== loggedUserId && new Date(event.data.date) < new Date() && !fetching && (
         <div className="mt-4">
-          {hasRated ? (
+          {hasRated || isRatingSubmitted ? (
             <p className="text-center text-xl font-semibold text-blue-600">
               ¡Gracias por tu calificación, esperamos que asistas al próximo evento!
             </p>

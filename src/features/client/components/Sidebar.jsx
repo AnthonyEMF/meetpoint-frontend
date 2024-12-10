@@ -3,6 +3,8 @@ import { useCategories } from "../hooks/useCategories";
 import { useEffect, useState } from "react";
 import { useUsers } from "../hooks/useUsers";
 import { useAuthStore } from "../../security/store/useAuthStore";
+import { BiLogOutCircle } from "react-icons/bi";
+import { FiPlusCircle } from "react-icons/fi";
 
 export const Sidebar = ({ onCategorySelect }) => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
@@ -11,7 +13,7 @@ export const Sidebar = ({ onCategorySelect }) => {
   const { categories, loadCategories, isLoading } = useCategories();
   const [fetching, setFetching] = useState(true);
 
-  // Obtener id del usuario desde el token
+  // Obtener id del usuario en sesión
   const getUserId = useAuthStore((state) => state.getUserId);
   const loggedUserId = getUserId();
 
@@ -56,14 +58,16 @@ export const Sidebar = ({ onCategorySelect }) => {
           </div>
           <div className="mb-4">
             <Link to="/main/event/create">
-              <button className="bg-green-600 text-white w-full py-2 rounded hover:bg-green-500 mb-4">
-                Crear Nuevo Evento
+              <button className="flex items-center justify-center bg-green-600 text-white w-full py-2 rounded hover:bg-green-500 mb-4">
+                <FiPlusCircle size={17} className="mr-1" />
+                Nuevo Evento
               </button>
             </Link>
             <Link to="/home">
               <button
                 onClick={handleLogout}
-                className="bg-red-600 text-white w-full py-2 rounded hover:bg-red-500">
+                className="flex items-center justify-center bg-red-600 text-white w-full py-2 rounded hover:bg-red-500">
+                <BiLogOutCircle size={20} className="mr-1" />
                 Cerrar Sesión
               </button>
             </Link>

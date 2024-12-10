@@ -5,6 +5,8 @@ import { formatDate } from "../../../shared/utils";
 import { useAuthStore } from "../../security/store/useAuthStore";
 import { StarRating } from "../../../shared/components";
 import { IoStatsChart } from "react-icons/io5";
+import { FiPlusCircle } from "react-icons/fi";
+import { BiLogOutCircle } from "react-icons/bi";
 
 export const UserPage = () => {
   const logout = useAuthStore((state) => state.logout);
@@ -54,14 +56,16 @@ export const UserPage = () => {
         </div>
         <div className="ml-auto">
           <Link to="/main/event/create">
-            <button className="bg-green-600 text-white w-full py-2 rounded hover:bg-green-500 mb-4">
-              Crear Nuevo Evento
+            <button className="flex items-center justify-center px-10 bg-green-600 text-white w-full py-2 rounded hover:bg-green-500 mb-4">
+              <FiPlusCircle size={17} className="mr-1" />
+              Nuevo Evento
             </button>
           </Link>
           <Link to="/home">
             <button
               onClick={handleLogout}
-              className="bg-red-600 text-white w-full py-2 rounded hover:bg-red-500">
+              className="flex items-center justify-center px-10 bg-red-600 text-white w-full py-2 rounded hover:bg-red-500">
+              <BiLogOutCircle size={20} className="mr-1" />
               Cerrar Sesión
             </button>
           </Link>

@@ -175,10 +175,7 @@ export const EventPage = () => {
       )}
 
       {/* Lista de Asistentes */}
-      <Attendances
-        event={event}
-        handleAttendancesChange={handleAttendancesChange}
-      />
+      <Attendances event={event} handleAttendancesChange={handleAttendancesChange} />
 
       {/* Sección de Comentarios */}
       <Comments event={event} handleCommentsChange={handleCommentsChange} />
