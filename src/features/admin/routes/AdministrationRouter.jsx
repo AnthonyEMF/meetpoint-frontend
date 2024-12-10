@@ -3,6 +3,7 @@ import { Footer, Nav } from "../../client/components"
 import { DashboardPage } from "../pages/DashboardPage"
 import { CategoriesListPage, CreateCategoriesPage, EditUserPage, EventListPage, ReportsListPage, UsersListPage } from "../pages"
 import { EditCategoryPage } from "../pages/EditCategoryPage"
+import { CreateUsersPage } from "../pages/CreateUsersPage"
 
 export const AdministrationRouter = () => {
   return (
@@ -14,6 +15,7 @@ export const AdministrationRouter = () => {
             <Route path='/dashboard' element={<DashboardPage />} />
             <Route path='/users-list' element={<UsersListPage />} />
             <Route path='/user/edit/:id' element={<EditUserPage />} />
+            <Route path='/users-list/new' element={<CreateUsersPage />} />
             <Route path='/events-list' element={<EventListPage />} />
             <Route path='/categories-list' element={<CategoriesListPage />} />
             <Route path='/categories-list/edit/:id' element={<EditCategoryPage />} />

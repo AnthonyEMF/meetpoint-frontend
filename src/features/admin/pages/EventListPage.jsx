@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { Pagination } from "../../../shared/components";
 import { useEvents } from "../../client/hooks";
 import { EventRowItem } from "../components";
+import { Link } from "react-router-dom";
+import { FiPlusCircle } from "react-icons/fi";
 
 export const EventListPage = () => {
   const { events, loadEvents, isLoading } = useEvents();
@@ -64,6 +66,13 @@ export const EventListPage = () => {
                 {" "}
                 Buscar
               </button>
+              <Link
+                className="flex items-center bg-green-500 text-white px-4 py-2 rounded-lg ml-2 hover:bg-green-700"
+                to="/main/event/create" // Mandar al CreateEventPage
+              >
+                <FiPlusCircle size={17} className="mr-2" />
+                Nuevo evento
+              </Link>
             </div>
           </form>
         </div>

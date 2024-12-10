@@ -7,24 +7,17 @@ import { useRatings } from "../hooks/useRatings";
 import { useUsers } from "../hooks/useUsers";
 
 export const Attendances = ({ event, handleAttendancesChange }) => {
-  const {
-    createAttendance,
-    editAttendance,
-    deleteAttendance,
-    isSubmitting,
-    error,
-  } = useAttendances();
+  // asistencia
+  const { createAttendance, editAttendance, deleteAttendance, isSubmitting, error } = useAttendances();
   const [currentAttendance, setCurrentAttendance] = useState(null);
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  // Propiedades y funciones para el rating
+  // rating
   const [rating, setRating] = useState(null);
   const [setIsRatingSubmitted] = useState(false);
   const { createRating } = useRatings();
-  // información del usuario
+  // user
   const { user, loadUserById } = useUsers();
   const [fetching, setFetching] = useState(true);
-
-  // Obtener id del usuario desde el token
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const getUserId = useAuthStore((state) => state.getUserId);
   const loggedUserId = getUserId();
 

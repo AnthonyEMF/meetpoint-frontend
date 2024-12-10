@@ -6,8 +6,7 @@ import { Link } from "react-router-dom";
 import { PiWarningCircleBold } from "react-icons/pi";
 
 export const Comments = ({ event, handleCommentsChange }) => {
-  const { createComment, editComment, deleteComment, isSubmitting, error } =
-    useComments();
+  const { createComment, editComment, deleteComment, isSubmitting, error } = useComments();
   const [newComment, setNewComment] = useState("");
   const [replyCommentId, setReplyCommentId] = useState(null);
   const [replyContent, setReplyContent] = useState("");

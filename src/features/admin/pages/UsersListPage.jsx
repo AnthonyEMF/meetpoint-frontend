@@ -2,6 +2,8 @@ import { Pagination } from "../../../shared/components/Pagination";
 import { useUsers } from "../../client/hooks/useUsers";
 import { useEffect, useState } from "react";
 import { UserRowItem } from "../components/UserRowItem";
+import { Link } from "react-router-dom";
+import { FiPlusCircle } from "react-icons/fi";
 
 export const UsersListPage = () => {
     const { users, loadUsers, isLoading } = useUsers();
@@ -63,6 +65,13 @@ export const UsersListPage = () => {
                   className="bg-gray-600 text-white px-4 py-2 rounded-r-md hover:bg-gray-500"
                 > Buscar
                 </button>
+                <Link
+                  className="flex items-center bg-green-500 text-white px-4 py-2 rounded-lg ml-2 hover:bg-green-700"
+                  to={`/administration/users-list/new`} // Mandar al CreateUserPage
+                >
+                  <FiPlusCircle size={17} className="mr-2" />
+                  Nuevo usuario
+                </Link>
             </div>
             </form>
         </div>

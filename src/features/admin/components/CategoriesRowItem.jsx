@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useCategoriesStore } from "../store/useCategoriesStore";
 import { useEvents } from "../../client/hooks";
 import { useEffect, useState } from "react";
+import { RiDeleteBin5Fill, RiEdit2Fill } from "react-icons/ri";
 
 export const CategoriesRowItem = ({ category, handleCategoriesChange }) => {
   const { deleteCategory } = useCategoriesStore();
@@ -43,17 +44,19 @@ export const CategoriesRowItem = ({ category, handleCategoriesChange }) => {
       <td className="px-6 py-4 text-sm text-gray-500">
         {category.description}
       </td>
-      <td className="px-6 py-4 text-sm text-white">
+      <td className="flex justify-center px-6 py-4 text-sm text-white">
         <Link
-          className="bg-blue-500 px-4 py-2 rounded mr-2 hover:bg-blue-400"
+          className="flex items-center bg-blue-500 px-4 py-2 rounded-lg mr-2 hover:bg-blue-700"
           to={`/administration/categories-list/edit/${category.id}`}
         >
+          <RiEdit2Fill className="mr-2" size={15}/>
           Editar
         </Link>
         <button
-          className="bg-red-500 px-4 py-2 rounded hover:bg-red-400"
+          className="flex items-center bg-red-500 px-4 py-2 rounded-lg hover:bg-red-700"
           onClick={handleDelete}
         >
+          <RiDeleteBin5Fill className="mr-2" size={15}/>
           Eliminar
         </button>
       </td>

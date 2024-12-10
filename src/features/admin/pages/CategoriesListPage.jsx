@@ -3,6 +3,7 @@ import { Pagination } from "../../../shared/components";
 import { useCategories } from "../../client/hooks";
 import { CategoriesRowItem } from "../components";
 import { Link } from "react-router-dom";
+import { FiPlusCircle } from "react-icons/fi";
 
 export const CategoriesListPage = () => {
   const { categories, loadCategories, isLoading } = useCategories();
@@ -71,9 +72,10 @@ export const CategoriesListPage = () => {
                 Buscar
               </button>
               <Link
-                className="bg-green-500 text-white px-4 py-2 rounded ml-2 hover:bg-green-400"
+                className="flex items-center bg-green-500 text-white px-4 py-2 rounded-lg ml-2 hover:bg-green-700"
                 to={`/administration/categories-list/new`} // Mandar al CreateCategoryPage
               >
+                <FiPlusCircle size={17} className="mr-2" />
                 Nueva categoría
               </Link>
             </div>
@@ -89,7 +91,7 @@ export const CategoriesListPage = () => {
               <th className="px-6 py-3 text-left text-gray-600 font-medium tracking-wider">
                 DESCRIPCIÓN
               </th>
-              <th className="px-6 py-3 text-left text-gray-600 font-medium tracking-wider">
+              <th className="px-6 py-3 text-center text-gray-600 font-medium tracking-wider">
                 ACCIONES
               </th>
             </tr>
