@@ -36,7 +36,7 @@ export const ReportDashboardRowItem = ({ reports = [], handleReportsChange }) =>
                 disabled={isSubmitting}
               >
                 {" "}
-                Eliminar
+                Eliminar Reporte
               </button>
             </div>
           </li>

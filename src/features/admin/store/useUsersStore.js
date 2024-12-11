@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { createUserApi, deleteUserApi, editUserApi, getUserById, getUsersList } from "../../../shared/actions/users/users.action";
+import { createUserApi, deleteUserApi, editUserApi, getUserById, getUsersList, toggleBlockUserApi } from "../../../shared/actions/users/users.action";
 
 export const useUsersStore = create((set, get) => ({
   selectedUser: {},
@@ -102,6 +102,32 @@ export const useUsersStore = create((set, get) => ({
         throw new Error("Error al eliminar el usuario");
       }
       return result;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  },
+
+  toggleBlockUser: async (id) => {
+    try { 
+      const result = await toggleBlockUserApi(id);
+      if (result.status) {
+        const updatedUsers = get().usersData.items.map((user) => 
+          user.id === id ? { ...user, isBlocked: !user.isBlocked } : user 
+        ); 
+        set((state) => ({ 
+          usersData: { 
+            ...state.usersData,
+            items: updatedUsers
+          }, 
+          selectedUser: get().selectedUser.id === id
+           ? { ...get().selectedUser, isBlocked: !get().selectedUser.isBlocked } 
+           : get().selectedUser 
+        })); 
+      } else { 
+        throw new Error("Error al bloquear/desbloquear el usuario"); 
+      } 
+      return result; 
     } catch (error) {
       console.error(error);
       throw error;

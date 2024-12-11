@@ -54,3 +54,14 @@ export const deleteUserApi = async (id) => {
         return error.response;
     }
 }
+
+// Editar 
+export const toggleBlockUserApi = async (id) => {
+    try {
+        const {data} = await meetpointApi.put(`/users/block/${id}`);
+        return data;
+    } catch (error) {
+        console.error(error);
+        return error.response;
+    }
+}
