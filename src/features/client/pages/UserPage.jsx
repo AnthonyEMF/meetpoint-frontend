@@ -9,6 +9,7 @@ import { FiPlusCircle } from "react-icons/fi";
 import { BiLogOutCircle } from "react-icons/bi";
 import { RiDeleteBin5Fill, RiEdit2Fill } from "react-icons/ri";
 import { useUsersStore } from "../../admin/store/useUsersStore";
+import { MdOutlineWorkspacePremium } from "react-icons/md";
 
 export const UserPage = () => {
   const logout = useAuthStore((state) => state.logout);
@@ -17,7 +18,7 @@ export const UserPage = () => {
   const { deleteUser } = useUsersStore();
   const navigate = useNavigate();
 
-  // Obtener id del usuario desde el token
+  // Obtener id del usuario en sesión
   const getUserId = useAuthStore((state) => state.getUserId);
   const loggedUserId = getUserId();
 
@@ -58,11 +59,15 @@ export const UserPage = () => {
             />
           </div>
           <div>
-            <h2 className="text-2xl font-semibold">
-            {user?.data?.firstName} {user?.data?.lastName}
+            <h2 className="text-2xl flex font-semibold">
+              {user?.data?.firstName} {user?.data?.lastName}
+              {user?.data?.membership && ( // Mostrar insignia de usuario premium
+                <MdOutlineWorkspacePremium size={32} className="text-yellow-500 ml-1"/>
+              )}
             </h2>
             <p className="py-1 text-gray-700">{user?.data?.email}</p>
             <p className="text-gray-700">{user?.data?.location}</p>
+            {/* Rating de estrellas */}
             <div className="mt-2 flex items-center">
               <StarRating rating={user?.data?.averageRating || 0} />
               <IoStatsChart size={14} className="text-gray-700 mt-1 mx-1" />

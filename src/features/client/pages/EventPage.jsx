@@ -124,6 +124,12 @@ export const EventPage = () => {
                 >
                   <span className="font-bold">{event.data.organizerName}</span>
                 </Link>
+                {/* Rating de estrellas */}
+                {/* <div className="mt-2 flex justify-center items-center">
+                  <StarRating rating={user?.data?.averageRating || 0} />
+                  <IoStatsChart size={14} className="text-gray-700 mt-1 mx-1" />
+                  <span className="text-base text-gray-700">({user?.data?.ratingsCount})</span>
+                </div> */}
               </p>
             )}
 

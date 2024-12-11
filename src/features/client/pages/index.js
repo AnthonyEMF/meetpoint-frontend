@@ -6,3 +6,4 @@ export * from './CreateEventPage';
 export * from './EditEventPage';
 export * from './UserViewPage';
 export * from './EditUserPage';
+export * from './MembershipsPage';

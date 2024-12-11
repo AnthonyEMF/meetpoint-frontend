@@ -9,6 +9,7 @@ import { IoStatsChart } from "react-icons/io5";
 import { useReports } from "../hooks/useReports";
 import { useUsersStore } from "../../admin/store/useUsersStore";
 import { RiDeleteBin5Fill, RiEdit2Fill } from "react-icons/ri";
+import { MdOutlineWorkspacePremium } from "react-icons/md";
 
 export const UserViewPage = () => {
   const [fetching, setFetching] = useState(true);
@@ -82,8 +83,11 @@ export const UserViewPage = () => {
             />
           </div>
           <div>
-            <h2 className="text-2xl font-semibold">
+            <h2 className="text-2xl flex font-semibold">
               {user?.data?.firstName} {user?.data?.lastName}
+              {user?.data?.membership && ( // Mostrar insignia de usuario premium
+                <MdOutlineWorkspacePremium size={32} className="text-yellow-500 ml-1"/>
+              )}
             </h2>
             <p className="py-1 text-gray-700">{user?.data?.email}</p>
             <p className="text-gray-700">{user?.data?.location}</p>

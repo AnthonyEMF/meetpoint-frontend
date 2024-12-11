@@ -7,6 +7,8 @@ import { BiLogOutCircle } from "react-icons/bi";
 import { FiPlusCircle } from "react-icons/fi";
 import { FaPeoplePulling } from "react-icons/fa6";
 import { MdOutlineWorkspacePremium } from "react-icons/md";
+import { StarRating } from "../../../shared/components";
+import { IoStatsChart } from "react-icons/io5";
 
 export const Sidebar = ({ onCategorySelect }) => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
@@ -50,13 +52,22 @@ export const Sidebar = ({ onCategorySelect }) => {
                 className="w-24 h-24 rounded-full mx-auto mb-3"
               />
             </Link>
-            <h2 className="text-xl font-bold">
+            <h2 className="text-xl flex justify-center items-center font-bold">
               {user?.data?.firstName} {user?.data?.lastName}
+              {user?.data?.membership && ( // Mostrar insignia de usuario premium
+                <MdOutlineWorkspacePremium size={27} className="text-yellow-500 ml-1"/>
+              )}
             </h2>
           </div>
           <div className="mb-4 text-center">
             <p className="mb-2">Eventos Organizados: <span className="font-bold">{user?.data?.eventsCount}</span></p>
             <p>Eventos Registrados: <span className="font-bold">{user?.data?.attendancesCount}</span></p>
+            {/* Rating de estrellas */}
+            <div className="mt-2 flex justify-center items-center">
+              <StarRating rating={user?.data?.averageRating || 0} />
+              <IoStatsChart size={14} className="text-gray-700 mt-1 mx-1" />
+              <span className="text-base text-gray-700">({user?.data?.ratingsCount})</span>
+            </div>
           </div>
           <div className="mb-4">
             <Link to="/main/event/create">
@@ -100,22 +111,37 @@ export const Sidebar = ({ onCategorySelect }) => {
         </ul>
       </div>
 
+      {/* Membresía */}
       {isAuthenticated && (
-      <div className="bg-white shadow-lg rounded-md p-5">
-        <h3 className="text-lg text-center font-bold mb-2">¡Adquiere tu membresía!</h3>
-
-        <div className="flex flex-col items-center justify-center">
-          <MdOutlineWorkspacePremium size={60} className="text-yellow-500" />
-          <p className="mb-4 mt-2 text-center px-4">Descubre las ventajas de adquirir un plan de membresía</p>
-        </div>
-
-        <Link
-          to="/membership"
-          className="flex justify-center p-2 bg-blue-600 rounded text-white hover:bg-blue-500"
-        >
-          Ver planes
-        </Link>
-      </div>
+        <>
+          {!user?.data?.membership ? (
+            <div className="bg-white shadow-lg rounded-md p-5">
+              <h3 className="text-lg text-center font-bold mb-2">¡Adquiere tu membresía!</h3>
+              <div className="flex flex-col items-center justify-center">
+                <MdOutlineWorkspacePremium size={60} className="text-yellow-500" />
+                <p className="mb-4 mt-2 text-center px-4">
+                  Descubre las ventajas de adquirir un plan de membresía
+                </p>
+              </div>
+              <Link
+                to="/membership"
+                className="flex justify-center p-2 bg-yellow-500 rounded text-white font-semibold hover:bg-yellow-600"
+              >
+                Ver planes
+              </Link>
+            </div>
+          ) : (
+            <div className="bg-white shadow-lg rounded-md p-5">
+              <h3 className="text-xl text-center font-bold mb-2">¡Felicidades!</h3>
+              <div className="flex flex-col items-center justify-center">
+                <MdOutlineWorkspacePremium size={60} className="text-yellow-500" />
+                <p className="mb-2 mt-2 text-center px-4">
+                  Ya eres un usuario premium, esperamos que disfrutes de los beneficios exclusivos
+                </p>
+              </div>
+            </div>
+          )}
+        </>
       )}
 
       {/* Crear una cuenta */}

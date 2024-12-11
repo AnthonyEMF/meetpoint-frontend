@@ -3,6 +3,7 @@ import { TbMessageReport } from "react-icons/tb";
 import { Link } from "react-router-dom";
 import { useAuthStore } from "../../security/store";
 import { useUsersStore } from "../store/useUsersStore";
+import { MdOutlineWorkspacePremium } from "react-icons/md";
 
 export const UserRowItem = ({ user, handleBlockedChange }) => {
   // Obtener id del usuario en sesión
@@ -24,7 +25,10 @@ export const UserRowItem = ({ user, handleBlockedChange }) => {
 
   return (
     <tr key={user.id}>
-      <td className="px-6 py-4 text-sm font-medium text-gray-900">
+      <td className="px-6 py-4 text-sm flex items-center font-medium text-gray-900">
+        {user?.membership && ( // Mostrar insignia de usuario premium
+          <MdOutlineWorkspacePremium size={17} className="text-yellow-500 mr-1"/>
+        )}
         {user.firstName} {user.lastName}
       </td>
       <td className="px-6 py-4 text-sm text-gray-700">{user.email}</td>
