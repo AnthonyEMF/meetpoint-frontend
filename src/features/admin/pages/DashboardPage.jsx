@@ -204,7 +204,7 @@ export const DashboardPage = () => {
             <div className="flex justify-center items-center">
               <span className="text-2xl mb-2">Reportes de usuarios</span>
             </div>
-            <div className="flex items-center">
+            <form onSubmit={handleSubmit} className="flex items-center">
               <input
                 type="text"
                 placeholder="Buscar reporte..."
@@ -213,14 +213,13 @@ export const DashboardPage = () => {
                 className="w-full px-4 py-2 border rounded-lg rounded-r-none focus:outline-none focus:border-gray-500"
               />
               <button
-                onSubmit={handleSubmit}
                 type="submit"
                 className="bg-gray-600 text-white px-4 py-2 rounded-r-md hover:bg-gray-500"
               >
                 {" "}
                 Buscar
               </button>
-            </div>
+            </form>
           </h2>
           <ul className="space-y-2">
             {isLoading ? (
