@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useUsers } from "../hooks/useUsers";
 import { formatDate } from "../../../shared/utils";
 import { useAuthStore } from "../../security/store/useAuthStore";
-import { StarRating } from "../../../shared/components";
+import { CustomAlerts, StarRating } from "../../../shared/components";
 import { IoStatsChart } from "react-icons/io5";
 import { FiPlusCircle } from "react-icons/fi";
 import { BiLogOutCircle } from "react-icons/bi";
@@ -17,6 +17,8 @@ export const UserPage = () => {
   const { user, loadUserById } = useUsers();
   const { deleteUser } = useUsersStore();
   const navigate = useNavigate();
+  const [alert, setAlert] = useState(null);
+
 
   // Obtener id del usuario en sesión
   const getUserId = useAuthStore((state) => state.getUserId);
@@ -38,16 +40,35 @@ export const UserPage = () => {
   const handleDeleteUser = async () => {
     try {
       await deleteUser(loggedUserId);
-      alert("Su cuenta ha sido eliminada correctamente.");
-      logout();
-      navigate("/home");
+      setAlert({
+        message: "Su cuenta ha sido eliminada correctamente.",
+        type: "success",
+      });
+      setTimeout(() => {
+        logout();
+        navigate("/home");
+      }, 2000);
     } catch (error) {
       console.error("Error al eliminar la cuenta:", error);
+      setAlert({
+        message: "Hubo un error al eliminar la cuenta.",
+        type: "error",
+      });
     }
   };
+  
 
   return (
     <div className="container mx-auto p-6">
+      
+      {alert && (
+      <CustomAlerts
+        message={alert.message}
+        type={alert.type}
+        onClose={() => setAlert(null)} // Cerrar alerta
+      />
+    )}
+
       {/* Información de Usuario */}
       <div className="bg-white shadow-lg rounded-lg p-6 mb-4 flex items-center justify-between">
         <div className="flex items-center">

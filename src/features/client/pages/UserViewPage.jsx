@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { useUsers } from "../hooks/useUsers";
 import { formatDate } from "../../../shared/utils";
 import { useAuthStore } from "../../security/store";
-import { ProtectedComponent, StarRating } from "../../../shared/components";
+import { CustomAlerts, ProtectedComponent, StarRating } from "../../../shared/components";
 import { rolesListConstant } from "../../../shared/constants";
 import { IoStatsChart } from "react-icons/io5";
 import { useReports } from "../hooks/useReports";
@@ -26,6 +26,8 @@ export const UserViewPage = () => {
   const getUserId = useAuthStore((state) => state.getUserId);
   const loggedUserId = getUserId();
 
+  const [alert, setAlert] = useState(null);
+
   useEffect(() => {
     if (fetching) {
       loadUserById(id);
@@ -37,10 +39,20 @@ export const UserViewPage = () => {
   const handleDeleteUser = async () => {
     try {
       await deleteUser(id);
-      alert("Usuario eliminado correctamente.");
+      setAlert({
+        message: "Usuario eliminado correctamente.",
+        type: "success",
+        onClose: () => setAlert(null), // Cierra la alerta
+      });
+      setTimeout(() => {
       navigate("/administration/users-list");
+    }, 2000);
     } catch (error) {
-      console.error("Error al eliminar el usuario:", error);
+      setAlert({
+        message: "Error al eliminar el usuario.",
+        type: "error",
+        onClose: () => setAlert(null),
+      });
     }
   };
 
@@ -56,7 +68,11 @@ export const UserViewPage = () => {
   // Crear un nuevo reporte
   const handleCreateReport = async () => {
     if (reason.length < 10) {
-      alert("El motivo del reporte debe tener al menos 10 caracteres.");
+      setAlert({
+        message: "El motivo del reporte debe tener al menos 10 caracteres.",
+        type: "warning",
+        onClose: () => setAlert(null),
+      });
       return;
     }
 
@@ -66,12 +82,22 @@ export const UserViewPage = () => {
     };
 
     await createReport(reportData);
-    alert("El usuario ha sido reportado, pronto tomaremos acciones al respecto");
+    setAlert({
+      message: "El usuario ha sido reportado, pronto tomaremos acciones al respecto.",
+      type: "info",
+      onClose: () => setAlert(null),
+    });
+    setTimeout(() => {
     navigate("/main");
+    }, 2000);
   };
+
 
   return (
     <div className="container mx-auto p-6">
+
+    {alert && <CustomAlerts {...alert} />}
+
       {/* Información de Usuario */}
       <div className="bg-white shadow-lg rounded-lg p-6 mb-4 flex items-center justify-between">
         <div className="flex items-center">

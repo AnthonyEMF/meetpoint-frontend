@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { PiWarningCircleBold } from "react-icons/pi";
 import { useRatings } from "../hooks/useRatings";
 import { useUsers } from "../hooks/useUsers";
-import { Loading, ProtectedComponent } from "../../../shared/components";
+import { CustomAlerts, Loading, ProtectedComponent } from "../../../shared/components";
 import StarRatingInput from "../../../shared/components/StarRatingInput";
 import { FaUserGear, FaUserXmark } from "react-icons/fa6";
 import { rolesListConstant } from "../../../shared/constants";
@@ -22,11 +22,11 @@ export const Attendances = ({ event, handleAttendancesChange }) => {
   const getUserId = useAuthStore((state) => state.getUserId);
   const loggedUserId = getUserId();
   const navigate = useNavigate();
+  const [alertMessage, setAlertMessage] = useState(null);
 
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Cargar el usuario para verificar los ratings
     if (isLoading || isRatingSubmitted) {
       loadUserById(loggedUserId)
         .then(() => {
@@ -43,26 +43,23 @@ export const Attendances = ({ event, handleAttendancesChange }) => {
     setCurrentAttendance(userAttendance || null);
   }, [event.data.attendances, loggedUserId, loadUserById, isLoading, isRatingSubmitted]);
 
-  // Verificar si el usuario ya ha calificado el evento
   const hasRated = user?.data?.madeRatings?.some(
     (rating) => rating.eventId === event.data.id
   );
 
-  // Crear asistencia
   const handleConfirmAttendance = async () => {
     const attendanceData = {
       eventId: event.data.id,
-      state: "CONFIRMADO", // Se le asigna CONFORMADO automáticamente
+      state: "CONFIRMADO",
     };
 
     const result = await createAttendance(attendanceData);
     if (result) {
-      setCurrentAttendance(result); // Guardar la asistencia creada
+      setCurrentAttendance(result);
       if (handleAttendancesChange) handleAttendancesChange();
     }
   };
 
-  // Editar la asistencia
   const handleChangeAttendanceState = async (newState) => {
     const updatedAttendance = {
       state: newState,
@@ -73,21 +70,19 @@ export const Attendances = ({ event, handleAttendancesChange }) => {
       updatedAttendance
     );
     if (result) {
-      setCurrentAttendance(result); // Actualizar la asistencia con el nuevo estado
+      setCurrentAttendance(result);
       if (handleAttendancesChange) handleAttendancesChange();
     }
   };
 
-  // Eliminar la asistencia
   const handleDeleteAttendance = async () => {
     const result = await deleteAttendance(currentAttendance.id);
     if (result) {
-      setCurrentAttendance(null); // Eliminar la asistencia localmente
+      setCurrentAttendance(null);
       if (handleAttendancesChange) handleAttendancesChange();
     }
   };
 
-  // Eliminar asistencia de la lista
   const handleDeleteAttendanceFromList = async (attendanceId) => {
     const result = await deleteAttendance(attendanceId);
     if (result) {
@@ -95,14 +90,15 @@ export const Attendances = ({ event, handleAttendancesChange }) => {
     }
   };
 
-  // Manejar cambio en la calificación
   const handleRatingChange = (e) => {
     setRating(e.target.value);
   };
 
-  // Enviar la calificación
   const handleSubmitRating = async () => {
-    if (rating < 1 || rating > 5) return alert("Ingresa una calificación.");
+    if (rating < 1 || rating > 5) {
+      setAlertMessage({ type: "warning", message: "Ingresa una calificación." }); // Usamos el CustomAlert
+      return;
+    }
 
     const ratingData = {
       eventId: event.data.id,
@@ -112,8 +108,10 @@ export const Attendances = ({ event, handleAttendancesChange }) => {
 
     await createRating(ratingData);
     setIsRatingSubmitted(true);
-    alert("¡Gracias por tu calificación!");
+    setAlertMessage({ type: "success", message: "¡Gracias por tu calificación!" }); // Usamos el CustomAlert
+    setTimeout(() => {
     navigate(`/user/view/${event.data.organizerId}`);
+    }, 2000);
   };
 
   if (isLoading) return <Loading />;
@@ -122,6 +120,8 @@ export const Attendances = ({ event, handleAttendancesChange }) => {
     <div className="bg-white shadow-lg rounded-lg p-6 mb-6">
       <h2 className="text-2xl font-bold">Lista de Asistentes</h2>
       <div className="font-semibold text-lg text-gray-600 mb-2">{event.data.attendancesCount} asistencias</div>
+
+      {alertMessage && <CustomAlerts message={alertMessage.message} type={alertMessage.type} />}
 
       {/* Mostrar si el usuario esta autenticado */}
       {isAuthenticated ? (
