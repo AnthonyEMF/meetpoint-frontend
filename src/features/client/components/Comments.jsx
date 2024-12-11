@@ -83,6 +83,9 @@ export const Comments = ({ event, handleCommentsChange }) => {
                   />
                   <p className="font-semibold text-gray-900">
                     {comment.userName}
+                    {/* {user?.data?.membership && ( // Mostrar insignia de usuario premium
+                      <MdOutlineWorkspacePremium size={27} className="text-yellow-500 ml-1"/>
+                    )} */}
                   </p>
                 </Link>
 

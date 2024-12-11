@@ -171,7 +171,7 @@ export const Attendances = ({ event, handleAttendancesChange }) => {
                     <div>
                       {loggedUserId === attendance.userId && (
                       <span className="text-green-500 font-semibold flex items-center">
-                        <FaUserGear className="mt-1 mx-1" />Tu asistencia
+                        <FaUserGear className="mt-1 mx-1" />Mi asistencia
                       </span>
                       )}
                     </div>

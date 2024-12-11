@@ -31,13 +31,14 @@ export const EventPage = () => {
       }
     }
   }, [fetching]);
-
+  
   if (!event || !event.data) {
     return <div>Evento no encontrado.</div>;
   }
-
+  
   // Verificar si el usuario en sesión es el organizador del evento
   const isOrganizer = loggedUserId === event.data.organizerId;
+  
 
   // Editar el evento
   const handleEditEvent = () => {
@@ -113,19 +114,13 @@ export const EventPage = () => {
           {/* Contenedor Derecho */}
           <div className="w-full md:w-30 md:pl-4 flex flex-col items-end">
             {isAuthenticated && (
-              <p className="mb-2 self-end">
+              <p className="mb-1 self-end">
                 Organizado por{" "}
-                <Link
-                  to={
-                    event.data.organizerId === loggedUserId
-                      ? "/user"
-                      : `/user/view/${event.data.organizerId}`
-                  }
-                >
+                <Link to={event.data.organizerId === loggedUserId ? "/user" : `/user/view/${event.data.organizerId}`}>
                   <span className="font-bold">{event.data.organizerName}</span>
                 </Link>
                 {/* Rating de estrellas */}
-                {/* <div className="mt-2 flex justify-center items-center">
+                {/* <div className="flex justify-center items-center">
                   <StarRating rating={user?.data?.averageRating || 0} />
                   <IoStatsChart size={14} className="text-gray-700 mt-1 mx-1" />
                   <span className="text-base text-gray-700">({user?.data?.ratingsCount})</span>
