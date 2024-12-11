@@ -1,17 +1,23 @@
 import { Link } from "react-router-dom";
 import { CategoryDashboardRowItem, EventDashboardRowItem, ReportDashboardRowItem, UserDashboardRowItem } from "../components";
 import { useEffect, useState } from "react";
-import { Loading } from "../../../shared/components";
+import { Loading, Pagination } from "../../../shared/components";
 import { useDashboardStore } from "../store/useDashboardStore";
 import { FaComments } from "react-icons/fa";
 import { FaMapLocationDot } from "react-icons/fa6";
 import { MdAssignment } from "react-icons/md";
 import { IoPeopleSharp } from "react-icons/io5";
+import { useReports } from "../../client/hooks";
 
 export const DashboardPage = () => {
   const loadData = useDashboardStore((state) => state.loadData);
   const dashboardData = useDashboardStore((state) => state.dashboardData);
   const [isLoading, setIsLoading] = useState(true);
+  // reportes con paginación
+  const { reports, loadReports } = useReports();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [fetching, setFetching] = useState(true);
 
   const {
     usersCount,
@@ -21,9 +27,10 @@ export const DashboardPage = () => {
     users,
     events,
     categories,
-    reports,
+    //reports,
   } = dashboardData;
 
+  // Cargar dashboard
   useEffect(() => {
     if (isLoading) {
       loadData();
@@ -31,9 +38,44 @@ export const DashboardPage = () => {
     }
   }, [isLoading]);
 
+  // Cargar reportes
+  useEffect(() => {
+    if (fetching) {
+      loadReports(searchTerm, currentPage);
+      setFetching(false);
+    }
+  }, [fetching, searchTerm, currentPage]);
+
   // Actualizar reportes
   const handleReportsChange = async () => {
-    await loadData();
+    await loadReports(searchTerm, currentPage);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setFetching(true);
+  };
+
+  // Cambiar a una página especifica
+  const handleCurrentPage = (index = 1) => {
+    setCurrentPage(index);
+    setFetching(true);
+  };
+
+  // Ir a página anterior
+  const handlePreviousPage = () => {
+    if (category.data.hasPreviousPage) {
+      setCurrentPage((prevPage) => prevPage - 1);
+      setFetching(true);
+    }
+  };
+
+  // Ir a página siguiente
+  const handleNextPage = () => {
+    if (category.data.hasNextPage) {
+      setCurrentPage((prevPage) => prevPage + 1);
+      setFetching(true);
+    }
   };
 
   if (isLoading) return <Loading />;
@@ -162,13 +204,63 @@ export const DashboardPage = () => {
             <div className="flex justify-center items-center">
               <span className="text-2xl mb-2">Reportes de usuarios</span>
             </div>
+            <div className="flex items-center">
+              <input
+                type="text"
+                placeholder="Buscar reporte..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full px-4 py-2 border rounded-lg rounded-r-none focus:outline-none focus:border-gray-500"
+              />
+              <button
+                onSubmit={handleSubmit}
+                type="submit"
+                className="bg-gray-600 text-white px-4 py-2 rounded-r-md hover:bg-gray-500"
+              >
+                {" "}
+                Buscar
+              </button>
+            </div>
           </h2>
           <ul className="space-y-2">
-            <ReportDashboardRowItem
-              reports={reports}
-              handleReportsChange={handleReportsChange}
-            />
+            {isLoading ? (
+              <li>
+                <p colSpan="5" className="px-6 py-4 text-center text-gray-500">
+                  Cargando...
+                </p>
+              </li>
+            ) : reports?.data?.items?.length ? (
+              reports.data.items
+                .slice(0, 5)
+                .map((report) => (
+                  <ReportDashboardRowItem
+                    key={report.id}
+                    report={report}
+                    handleReportsChange={handleReportsChange}
+                  />
+                ))
+            ) : (
+              <li>
+                <p colSpan="5" className="px-6 py-4 text-center text-gray-500">
+                  No se encontraron resultados.
+                </p>
+              </li>
+            )}
           </ul>
+
+          {/* Paginación */}
+          <div className="mt-6 mb-6 flex justify-center">
+            <Pagination
+              totalPages={reports?.data?.totalPages}
+              hasNextPage={reports?.data?.hasNextPage}
+              hasPreviousPage={reports?.data?.hasPreviousPage}
+              currentPage={currentPage}
+              handleNextPage={handleNextPage}
+              handlePreviousPage={handlePreviousPage}
+              setCurrentPage={setCurrentPage}
+              handleCurrentPage={handleCurrentPage}
+            />
+          </div>
         </section>
       </div>
     </div>

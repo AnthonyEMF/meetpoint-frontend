@@ -6,6 +6,7 @@ import { useAuthStore } from "../../security/store/useAuthStore";
 import { BiLogOutCircle } from "react-icons/bi";
 import { FiPlusCircle } from "react-icons/fi";
 import { FaPeoplePulling } from "react-icons/fa6";
+import { MdOutlineWorkspacePremium } from "react-icons/md";
 
 export const Sidebar = ({ onCategorySelect }) => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
@@ -40,7 +41,7 @@ export const Sidebar = ({ onCategorySelect }) => {
     <aside className="w-64 mr-6 mb-6">
       {/* Sección de Usuario */}
       {isAuthenticated ? (
-        <div className="bg-white shadow-lg rounded-md p-6 mb-4">
+        <div className="bg-white shadow-lg rounded-md p-6 mb-6">
           <div className="text-center mb-2">
             <Link to="/user">
               <img
@@ -98,6 +99,24 @@ export const Sidebar = ({ onCategorySelect }) => {
           )}
         </ul>
       </div>
+
+      {isAuthenticated && (
+      <div className="bg-white shadow-lg rounded-md p-5">
+        <h3 className="text-lg text-center font-bold mb-2">¡Adquiere tu membresía!</h3>
+
+        <div className="flex flex-col items-center justify-center">
+          <MdOutlineWorkspacePremium size={60} className="text-yellow-500" />
+          <p className="mb-4 mt-2 text-center px-4">Descubre las ventajas de adquirir un plan de membresía</p>
+        </div>
+
+        <Link
+          to="/membership"
+          className="flex justify-center p-2 bg-blue-600 rounded text-white hover:bg-blue-500"
+        >
+          Ver planes
+        </Link>
+      </div>
+      )}
 
       {/* Crear una cuenta */}
       {!isAuthenticated && (
